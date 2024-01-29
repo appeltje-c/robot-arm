@@ -1,0 +1,44 @@
+services:
+
+  ops:
+    build:
+      context: ops
+    ports:
+      - 3000:3000
+    stdin_open: true
+    volumes:
+      - ./ops:/usr/src/ops
+      - /usr/src/ops/node_modules
+    restart: always
+    networks:
+      - monumental-ops
+    depends_on:
+      - api
+
+  api:
+    restart: always
+    build:
+      context: api
+    volumes:
+      - ./api:/usr/src/api
+      - /usr/src/api/node_modules
+    depends_on:
+      - storage
+    networks:
+      - monumental-storage
+      - monumental-ops
+    expose:
+      - 3000
+
+  storage:
+    restart: always
+    image: mongo:4.2.0
+    volumes:
+      - ./data:/data/db
+    networks:
+      - monumental-storage
+    expose:
+      - 27017
+networks:
+  monumental-ops:
+  monumental-storage:
