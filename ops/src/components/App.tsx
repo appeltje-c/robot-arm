@@ -47,7 +47,7 @@ const App = () => {
 
     useEffect(() => {
         socket.emit("state:get")
-    }, [])
+    }, [socket])
 
     socket.on("state", (data) => {
         console.info(data)
