@@ -13,6 +13,7 @@ data
 
 # build
 api/dist
+api/debug.log
 
 # misc
 .DS_Store
