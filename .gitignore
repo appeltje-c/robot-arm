@@ -11,6 +11,9 @@ api/node_modules/
 # MongoDB Data
 data
 
+# build
+api/dist
+
 # misc
 .DS_Store
 .env.local

@@ -1,1 +1,0 @@
-{"version":3,"file":"RobotState.js","sourceRoot":"","sources":["../../src/models/RobotState.ts"],"names":[],"mappings":";;;;;;AAAA,wDAA+B;AAM/B,MAAM,gBAAgB,GAAG,IAAI,kBAAQ,CAAC,MAAM,CACxC;IACI,MAAM,EAAE;QACJ,IAAI,EAAE,MAAM;QACZ,MAAM,EAAE,IAAI;KACf;CACJ,EACD;IACI,UAAU,EAAE,IAAI;CACnB,CACJ,CAAA;AAEY,QAAA,UAAU,GAAG,kBAAQ,CAAC,KAAK,CAAqB,YAAY,EAAE,gBAAgB,CAAC,CAAA"}
