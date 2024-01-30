@@ -31,7 +31,7 @@ Running the project takes a few steps:
 git clone https://github.com/appeltje-c/monumental
 cd monumental
 docker compose up -d
-- ```
+```
 
 When the Docker output reads
 
