@@ -1,26 +1,37 @@
-import app from './app'
-import bluebird from 'bluebird'
+/*
+ * Copyright (C) 2024 - Martijn Benjamin
+ *
+ * -----
+ * Written for the Monumental technical assessment
+ * "Visualizing a Robotic Crane"
+ * -----
+ */
+import 'dotenv/config'
+import express from 'express'
+import logger from './config/logger'
+import {Server} from 'socket.io'
 import mongoose from 'mongoose'
+import stateController from './controllers/state.controller'
 
-mongoose.Promise = bluebird
+const app = express()
 
-mongoose.connect("mongodb://storage:27017/monumental", {}).then(() => {
+// First ensure we get a mongo connection
+mongoose.connect(process.env.MONGODB_URL, {}).then(() => {
 
-        // Start Express server
-        const server = app.listen(3000, () => {
+    // Start Express server
+    const server = app.listen(process.env.PORT, () => {
+        logger.info(`App is running at http://localhost:${process.env.PORT}`)
+    })
 
-            console.log("  App is running at http://localhost:%d", 3000)
-            console.log("  Press CTRL-C to stop\n")
-        })
+    // Setup websockets channel
+    const io = new Server(server, {cors: {origin: '*'}})
 
-        // setup websockets channel
-        // Websockets(server)
+    // 'Bind' the controllers
+    io.on('connection', socket => {
+        stateController(socket)
+    })
 
-    }
-).catch(err => {
-    console.log(`MongoDB connection error. Please make sure MongoDB is running. ${err}`)
+}).catch(err => {
+    logger.error(`MongoDB connection error. Please make sure MongoDB is running. ${err}`)
     process.exit(1)
-});
-
-
-
+})

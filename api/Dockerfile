@@ -1,3 +1,11 @@
+#
+# Copyright (C) 2024 - Martijn Benjamin
+#
+# -----
+# Written for the Monumental technical assessment
+# "Visualizing a Robotic Crane"
+# -----
+#
 FROM node:lts-buster-slim
 
 WORKDIR /usr/src/api

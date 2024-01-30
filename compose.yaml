@@ -1,6 +1,16 @@
+#
+# Copyright (C) 2024 - Martijn Benjamin
+#
+# -----
+# Written for the Monumental technical assessment
+# "Visualizing a Robotic Crane"
+# -----
+#
 services:
 
+  # The Robot Ops App
   ops:
+    container_name: robot-ops
     build:
       context: ops
     ports:
@@ -15,7 +25,9 @@ services:
     depends_on:
       - api
 
+  # The Robot API
   api:
+    container_name: robot-api
     restart: always
     build:
       context: api
@@ -28,9 +40,11 @@ services:
       - monumental-storage
       - monumental-ops
     expose:
-      - 3000
+      - 3000:3000
 
+  # MongoDB Storage
   storage:
+    container_name: robot-state
     restart: always
     image: mongo:4.2.0
     volumes:
@@ -39,6 +53,7 @@ services:
       - monumental-storage
     expose:
       - 27017
+
 networks:
   monumental-ops:
   monumental-storage:
