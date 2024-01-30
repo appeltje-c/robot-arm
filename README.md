@@ -19,8 +19,8 @@ The project consists of an API, React Application and the Blender crane model in
 ## Running the project
 
 The project has been configured to run with Docker. It is possible to run without Docker but requires extra steps to
-install MongoDB, seed the data and configure the network. For the sake of brevity this has been left out of the cope of 
-the assessment. Drop me a message if you want to run it without Docker.
+install MongoDB, seed the data and configure the network. For the sake of brevity this has been left out of the scope of
+the implementation. Drop me a message if you want to run it without Docker.
 
 Running the project takes a few steps:
 
@@ -35,7 +35,7 @@ docker compose up -d
 
 When the Docker output reads
 
-<img src="./docs/docker.png" alt="drawing" width="700"/>
+<img src="./docs/docker.png" alt="drawing" width="500"/>
 
 the project is running and you can open [http://localhost:3000](http://localhost:3000)
 
@@ -60,7 +60,7 @@ Enjoy!
 ## Resources
 
 Here is a collection of online resources I used to get familiar with 3D in the browser and Robotics in general.
-A warning is in place, this is an extreme Rabbit hole! 🤓
+Rabbit hole warning. 🤓
 
 > ViewPort<br/>
 > https://codesandbox.io/p/sandbox/multiple-views-with-uniform-controls-r9w2ob
@@ -72,8 +72,8 @@ A warning is in place, this is an extreme Rabbit hole! 🤓
 > https://codesandbox.io/p/sandbox/cameracontrols-basic-sew669
 
 > Mesh Control <br/>
-> https://codesandbox.io/p/sandbox/object-gizmo-controls-forked-yxfdlj?file=%2Fsrc%2FApp.js%3A18%2C1
-
+> https://codesandbox.io/p/sandbox/object-gizmo-controls-forked-yxfdlj
+> 
 > Inverse Kinematics <br/>
 > https://threejs.org/docs/#examples/en/animations/CCDIKSolver <br/>
 > https://www.khanacademy.org/computer-programming/inverse-kinematics-robot-arm/5648684600524800 <br/>
@@ -85,8 +85,6 @@ A warning is in place, this is an extreme Rabbit hole! 🤓
 
 Todo:
 
-1. Websockets
-2. config property from .env
-3. Setup viewport with websockets and simple model
-4. Seed Mongo Data
-https://stackoverflow.com/questions/39348478/initialize-data-on-dockerized-mongo
+1. Setup viewport with websockets and simple model
+2. Seed Mongo Data
+   https://stackoverflow.com/questions/39348478/initialize-data-on-dockerized-mongo
