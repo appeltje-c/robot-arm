@@ -31,10 +31,12 @@ export function Crane() {
                 </mesh>
 
                 <PivotControls activeAxes={[false, true, false]}
+                               translationLimits={[undefined, [-1, 1.8], undefined]}
                                disableSliders
                                disableRotations
+                               disableScaling
                                depthTest={false}
-                               anchor={[0, 0, 0]}
+                               anchor={[-0.8, 0.5, 0]}
                                fixed
                                scale={75}
                                userData={['upper_arm']}>
@@ -51,7 +53,7 @@ export function Crane() {
                         disableSliders
                         anchor={[-0.88, 1, -0.4]}
                         fixed
-                        scale={55}
+                        scale={80}
                         depthTest={false}
                         lineWidth={2}>
 
@@ -65,14 +67,16 @@ export function Crane() {
                               position={[4.39, -0.984, 0.094]}
                               scale={[0.684, 1, 1]}/>
 
-                        <PivotControls disableAxes
-                                       disableSliders
-                                       rotation={[0, 0, 0]}
-                                       anchor={[0, 0, 0]}
-                                       fixed
-                                       scale={75}
-                                       depthTest={true}
-                                       lineWidth={2}>
+                        <PivotControls
+                            // we constrain the rotation of the elbow over x and z
+                            activeAxes={[true, false, true]}
+                            disableAxes
+                            disableSliders
+                            anchor={[-0.75, 1, -0.4]}
+                            fixed
+                            scale={75}
+                            depthTest={true}
+                            lineWidth={2}>
 
                             <mesh geometry={nodes.wrist.geometry}
                                   material={nodes.wrist.material}
@@ -90,6 +94,8 @@ export function Crane() {
                                   scale={[1, 0.068, 0.327]}/>
 
                             <PivotControls activeAxes={[true, false, false]}
+                                           disableScaling
+                                           translationLimits={[[-0.5, 0.2], undefined, undefined]}
                                            depthTest={false}
                                            anchor={[0, 0, 0]}
                                            scale={0.75}>

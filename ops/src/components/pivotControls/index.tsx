@@ -82,6 +82,9 @@ type PivotControlsProps = {
     /** Allows you to switch individual axes off */
     activeAxes?: [boolean, boolean, boolean]
 
+    /** disable scaling */
+    disableScaling?: boolean
+
     disableAxes?: boolean
     disableSliders?: boolean
     disableRotations?: boolean
@@ -155,6 +158,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
             onDragEnd,
             autoTransform = true,
             anchor,
+            disableScaling = false,
             disableAxes = false,
             disableSliders = false,
             disableRotations = false,
@@ -366,9 +370,12 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
                             {!disableAxes && activeAxes[1] && <AxisArrow axis={1} direction={yDir}/>}
                             {!disableAxes && activeAxes[2] && <AxisArrow axis={2} direction={zDir}/>}
 
-                            {!disableAxes && activeAxes[0] && <SphereScale axis={0} direction={xDir}/>}
-                            {!disableAxes && activeAxes[1] && <SphereScale axis={1} direction={yDir}/>}
-                            {!disableAxes && activeAxes[2] && <SphereScale axis={2} direction={zDir}/>}
+                            {!disableScaling && !disableAxes && activeAxes[0] &&
+                              <SphereScale axis={0} direction={xDir}/>}
+                            {!disableScaling && !disableAxes && activeAxes[1] &&
+                              <SphereScale axis={1} direction={yDir}/>}
+                            {!disableScaling && !disableAxes && activeAxes[2] &&
+                              <SphereScale axis={2} direction={zDir}/>}
 
                             {!disableSliders && activeAxes[0] && activeAxes[1] &&
                               <PlaneSlider axis={2} dir1={xDir} dir2={yDir}/>}

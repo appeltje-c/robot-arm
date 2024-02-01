@@ -36,6 +36,7 @@ const upV = new THREE.Vector3(0, 1, 0)
 const offsetMatrix = new THREE.Matrix4()
 
 export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
+
     const {
         translation,
         translationLimits,
