@@ -8,14 +8,49 @@
  */
 export namespace Monumental {
 
-    export interface JsonResponse {
-        status: number,
-        ok: boolean,
-        json: Promise<any>
+    export interface Robot {
+        type: RobotType,
+        nodes: Array<NodeType>
     }
 
-    export interface Robot {
+    export enum RobotType {
+        Crane = 'Crane'
+    }
 
+    export interface NodeType {
+        name: NodeName,
+        position: Position,
+        rotation: Rotation,
+        scale: Scale
+    }
+
+    interface Position{
+
+    }
+
+    interface Rotation {
+        isEuler: boolean,
+        order: RotationOrder,
+        x: number,
+        y: number,
+        z: number
+    }
+
+    export interface Scale {
+        x: number,
+        y: number,
+        z: number
+    }
+
+    export enum RotationOrder {
+        XYZ = 'XYZ'
+    }
+
+    export enum NodeName {
+        mainColumn = 'main_column',
+        upperArm = 'upper_arm',
+        elbow = 'elbow',
+        lowerArm = 'lower_arm'
     }
 
     export interface RobotState {

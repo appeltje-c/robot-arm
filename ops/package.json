@@ -7,32 +7,35 @@
     "url": "https://github.com/appeltje-c/monumental"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
-    "@fontsource-variable/outfit": "^5.0.8",
-    "@fontsource/roboto": "^5.0.8",
-    "@mui/icons-material": "^5.15.5",
-    "@mui/material": "^5.15.5",
-    "@react-three/drei": "^9.96.5",
+    "@mantine/core": "^7.5.1",
+    "@mantine/hooks": "^7.5.1",
+    "@react-three/drei": "^9.97.0",
     "@react-three/fiber": "^8.15.15",
-    "@types/node": "^16.18.70",
-    "@types/react": "^18.2.47",
-    "@types/react-dom": "^18.2.18",
+    "@tabler/icons": "^2.46.0",
+    "@types/three": "^0.160.0",
+    "leva": "^0.9.35",
+    "lodash.clamp": "^4.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
-    "react-use-websocket": "^4.5.0",
+    "react-use-refs": "^1.0.1",
     "socket.io-client": "^4.7.4",
-    "three": "^0.160.1",
-    "typescript": "^4.9.5"
+    "stats.js": "^0.17.0",
+    "three": "^0.161.0",
+    "valtio": "^1.13.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/lodash.clamp": "^4.0.9",
+    "@types/node": "^16.18.70",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
     "react-app-rewire-alias": "^1.1.7",
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "^2.2.1",
+    "typescript": "^4.9.5"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "GENERATE_SOURCEMAP=false react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
