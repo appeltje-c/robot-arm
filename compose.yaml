@@ -8,20 +8,20 @@
 #
 services:
 
-  # The Robot Ops App
+  # The Robot hmi
   ops:
-    container_name: robot-ops
+    container_name: robot-hmi
     build:
-      context: ops
+      context: hmi
     ports:
       - 3000:3000
     stdin_open: true
     volumes:
-      - ./ops:/usr/src/ops
-      - /usr/src/ops/node_modules
+      - ./hmi:/usr/src/hmi
+      - /usr/src/hmi/node_modules
     restart: always
     networks:
-      - monumental-ops
+      - monumental-hmi
     depends_on:
       - api
 
@@ -38,7 +38,7 @@ services:
       - storage
     networks:
       - monumental-storage
-      - monumental-ops
+      - monumental-hmi
     expose:
       - 3000:3000
 
@@ -55,5 +55,5 @@ services:
       - 27017
 
 networks:
-  monumental-ops:
+  monumental-hmi:
   monumental-storage:

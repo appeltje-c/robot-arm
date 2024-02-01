@@ -13,7 +13,7 @@ The project consists of an API, React Application and the Blender crane model in
 
 * api - A NodeJS project displaying backend technology using MongoDB and Websocket connectivity
 * model - The Mesh and armature of the Crane modelled in Blender
-* ops - A React Application visualizing the Crane displaying frontend technology using React Three Fiber and the API
+* hmi - A React Application visualizing the Crane displaying frontend technology using React Three Fiber and the API
   over Websockets for the telemetry data.
 
 ## Running the project
@@ -37,7 +37,9 @@ When the Docker output reads
 
 <img src="./docs/docker.png" alt="drawing" width="500"/>
 
-the project is running and you can open [http://localhost:3000](http://localhost:3000)
+the project is running. 
+
+Wait a minute for the hmi to fully start and then open [http://localhost:3000](http://localhost:3000)
 
 To stop the containers
 
@@ -49,7 +51,7 @@ docker compose down
 
 There are three main projects
 
-[Monumental Ops](./ops/README.md) : The React App
+[Monumental Hmi](hmi/README.md) : The React App
 
 [Monumental API](./api/README.md) : The API
 
@@ -59,9 +61,9 @@ Enjoy!
 
 ## Resources
 
-Here is a collection of online resources I used to get familiar with 3D in the browser and Robotics in general.
+Here is a collection of online resources I used to get familiar with Robotic and 3D concepts.
 
-Rabbit hole warning. ⚠️🤓
+*Rabbit hole warning*
 
 > ViewPort<br/>
 > https://codesandbox.io/p/sandbox/multiple-views-with-uniform-controls-r9w2ob
@@ -74,40 +76,29 @@ Rabbit hole warning. ⚠️🤓
 
 > Mesh Control <br/>
 > https://codesandbox.io/p/sandbox/object-gizmo-controls-forked-yxfdlj
-> 
+
 > Inverse Kinematics <br/>
-> 
-> https://medium.com/unity3danimation/overview-of-inverse-kinematics-9769a43ba956
-> https://medium.com/unity3danimation/create-your-own-ik-in-unity3d-989debd86770
-> 
-> 
+> https://medium.com/unity3danimation/overview-of-inverse-kinematics-9769a43ba956 <br/>
+> https://medium.com/unity3danimation/create-your-own-ik-in-unity3d-989debd86770 <br/>
+> https://tmf-code.github.io/inverse-kinematics/#/three-js <br/>
 > https://threejs.org/docs/#examples/en/animations/CCDIKSolver <br/>
 > https://www.khanacademy.org/computer-programming/inverse-kinematics-robot-arm/5648684600524800 <br/>
 > https://github.com/jsantell/THREE.IK <br/>
 > https://github.com/lo-th/fullik <br/>
 > https://github.com/wylieconlon/kinematics <br/>
-> https://threejs.org/examples/#webgl_loader_collada_kinematics
+> https://threejs.org/examples/#webgl_loader_collada_kinematics <br/>
+> https://github.com/pinglu85/IKSolver-for-threejs/tree/main <br/>
+> https://github.com/notrueblood/FABRIK-for-threejs-and-beyond.git <br/>
 
-Robot Projects
-https://hackaday.io/project/12989-thor
-https://hackaday.io/project/9851-controlling-a-robot-arm-with-blender
+> Matrix4 <br/>
+> https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/ <br/>
+> https://threejs.org/docs/#api/en/math/Matrix4 <br/>
 
-https://www.sciencedirect.com/science/article/pii/S187705091831072X
-
-https://github.com/glumb/robot-gui
-https://github.com/glumb/kinematics
-
-https://github.com/gkjohnson/closed-chain-ik-js.git
-https://github.com/jsdf/BussIK-js
-https://github.com/pinglu85/IKSolver-for-threejs/tree/main
-https://github.com/notrueblood/FABRIK-for-threejs-and-beyond.git
-
-Promising:
-https://tmf-code.github.io/inverse-kinematics/#/three-js
-
-
-Todo:
-
-1. Setup viewport with websockets and simple model
-2. Seed Mongo Data
-   https://stackoverflow.com/questions/39348478/initialize-data-on-dockerized-mongo
+> Robot Projects & Inspiration <br/>
+> https://hackaday.io/project/12989-thor <br/>
+> https://hackaday.io/project/9851-controlling-a-robot-arm-with-blender <br/>
+> https://www.sciencedirect.com/science/article/pii/S187705091831072X <br/>
+> https://github.com/glumb/robot-gui <br/>
+> https://github.com/glumb/kinematics <br/>
+> https://github.com/gkjohnson/closed-chain-ik-js.git <br/>
+> https://github.com/jsdf/BussIK-js <br/>

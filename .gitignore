@@ -1,5 +1,5 @@
 # dependencies
-ops/node_modules/
+hmi/node_modules/
 api/node_modules/
 
 # IDE

@@ -1,24 +1,12 @@
 
-# Monumental Robot Ops
+# Monumental Robot Hmi
 
 Todo:
 
-- move origin to center of mesh in blender
-
-- add gizmo for moving vertical
-- add gizmo for rotation on wrist
+- Data comms & storage
+- Gizmo placing
 - add inverse kinematics based on gripper relocation
 
-- Data comms & storage
-- Translation limits & rotation limits
-- Gizmo placing
-
-
-
-
-Learn more
-https://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/
-https://threejs.org/docs/#api/en/math/Matrix4
 
 
 
