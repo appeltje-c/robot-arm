@@ -60,7 +60,8 @@ Enjoy!
 ## Resources
 
 Here is a collection of online resources I used to get familiar with 3D in the browser and Robotics in general.
-Rabbit hole warning. 🤓
+
+Rabbit hole warning. ⚠️🤓
 
 > ViewPort<br/>
 > https://codesandbox.io/p/sandbox/multiple-views-with-uniform-controls-r9w2ob
@@ -75,12 +76,34 @@ Rabbit hole warning. 🤓
 > https://codesandbox.io/p/sandbox/object-gizmo-controls-forked-yxfdlj
 > 
 > Inverse Kinematics <br/>
+> 
+> https://medium.com/unity3danimation/overview-of-inverse-kinematics-9769a43ba956
+> https://medium.com/unity3danimation/create-your-own-ik-in-unity3d-989debd86770
+> 
+> 
 > https://threejs.org/docs/#examples/en/animations/CCDIKSolver <br/>
 > https://www.khanacademy.org/computer-programming/inverse-kinematics-robot-arm/5648684600524800 <br/>
 > https://github.com/jsantell/THREE.IK <br/>
 > https://github.com/lo-th/fullik <br/>
 > https://github.com/wylieconlon/kinematics <br/>
 > https://threejs.org/examples/#webgl_loader_collada_kinematics
+
+Robot Projects
+https://hackaday.io/project/12989-thor
+https://hackaday.io/project/9851-controlling-a-robot-arm-with-blender
+
+https://www.sciencedirect.com/science/article/pii/S187705091831072X
+
+https://github.com/glumb/robot-gui
+https://github.com/glumb/kinematics
+
+https://github.com/gkjohnson/closed-chain-ik-js.git
+https://github.com/jsdf/BussIK-js
+https://github.com/pinglu85/IKSolver-for-threejs/tree/main
+https://github.com/notrueblood/FABRIK-for-threejs-and-beyond.git
+
+Promising:
+https://tmf-code.github.io/inverse-kinematics/#/three-js
 
 
 Todo:
