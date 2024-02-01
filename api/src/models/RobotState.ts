@@ -8,15 +8,53 @@
  */
 import mongoose from "mongoose"
 
+enum RobotNode {
+    mainColumn = 'main_column',
+    upperArm = 'upper_arm',
+    elbow = 'elbow',
+    lowerArm = 'lower_arm',
+    wrist = 'wrist',
+    wristExtension = 'wrist_extension',
+    hand = 'hand',
+    gripper = 'gripper'
+}
+
 export type RobotStateDocument = mongoose.Document & {
-    coords: string
+    [RobotNode.mainColumn]: { position: number[] }
+    [RobotNode.upperArm]: { position: number[] }
+    [RobotNode.elbow]: { position: number[] }
+    [RobotNode.lowerArm]: { position: number[] }
+    [RobotNode.wrist]: { position: number[] }
+    [RobotNode.wristExtension]: { position: number[] }
+    [RobotNode.hand]: { position: number[] }
+    [RobotNode.gripper]: { position: number[] }
 }
 
 const robotStateSchema = new mongoose.Schema<RobotStateDocument>(
     {
-        coords: {
-            type: String,
-            unique: true
+        'main_column': {
+            position: Array<number>
+        },
+        'upper_arm': {
+            position: Array<number>
+        },
+        'elbow': {
+            position: Array<number>
+        },
+        'lower_arm': {
+            position: Array<number>
+        },
+        'wrist': {
+            position: Array<number>
+        },
+        'wrist_extension': {
+            position: Array<number>
+        },
+        'hand': {
+            position: Array<number>
+        },
+        'gripper': {
+            position: Array<number>
         }
     },
     {

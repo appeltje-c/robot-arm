@@ -17,7 +17,35 @@ import {RobotState} from '../models/RobotState'
 const getState = async (socket: Socket) => {
 
     const state = await RobotState.find({})
-    socket.emit('state', {actuator: [8, 100, -20]})
+
+    const robotState = {
+        'main_column': {
+            position: [0, 1.462, 0]
+        },
+        'upper_arm': {
+            position: [2.335, 0, 0.094]
+        },
+        'elbow': {
+            position: [2.6, 5.933, 0.074]
+        },
+        'lower_arm': {
+            position: [4.39, -0.984, 0.094]
+        },
+        'wrist': {
+            position: [4.701, 4.949, 0.101]
+        },
+        'wrist_extension': {
+            position: [4.691, 4.611, 0.007]
+        },
+        'hand': {
+            position: [5.368, 3.78, 0.049]
+        },
+        'gripper': {
+            position: [5.805, 3.585, 0.006]
+        }
+    }
+
+    socket.emit('state', robotState)
 }
 
 /**
