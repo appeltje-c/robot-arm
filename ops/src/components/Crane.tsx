@@ -17,9 +17,9 @@ export function Crane() {
                 // we constrain the rotation of the main column over x and z
                 activeAxes={[true, false, true]}
                 disableSliders
-                anchor={[-0.7, -1, -0]}
+                anchor={[-0.721, -1, -0]}
                 scale={5}
-                lineWidth={5}
+                lineWidth={2}
                 depthTest={false}
                 userData={['main_column']}>
 
@@ -36,8 +36,7 @@ export function Crane() {
                                disableScaling
                                depthTest={false}
                                anchor={[-0.8, 0.5, 0]}
-                               fixed
-                               scale={75}
+                               scale={1}
                                userData={['upper_arm']}>
 
                     <mesh geometry={nodes.upper_arm.geometry}
@@ -52,9 +51,8 @@ export function Crane() {
                         rotationLimits={[undefined, [-2, 2], undefined]}
                         disableAxes
                         disableSliders
-                        anchor={[-0.88, 1, -0.4]}
-                        fixed
-                        scale={80}
+                        anchor={[-0.889, 1, -0.4]}
+                        scale={2}
                         depthTest={false}
                         lineWidth={2}>
 
@@ -75,8 +73,7 @@ export function Crane() {
                             disableAxes
                             disableSliders
                             anchor={[-0.75, 1, -0.4]}
-                            fixed
-                            scale={75}
+                            scale={2}
                             depthTest={true}
                             lineWidth={2}>
 
@@ -105,7 +102,6 @@ export function Crane() {
                                 <mesh geometry={nodes.gripper.geometry}
                                       material={nodes.gripper.material}
                                       position={[5.805, 3.585, 0.006]}
-                                      rotation={[0, 0, 0]}
                                       scale={[-0.01, -0.132, -0.325]}/>
 
                             </PivotControls>
