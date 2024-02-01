@@ -20,7 +20,6 @@ export function Crane() {
                 anchor={[-0.7, -1, -0]}
                 scale={5}
                 lineWidth={5}
-                rotationLimits={[(0, 0), (0, 0)]}
                 depthTest={false}
                 userData={['main_column']}>
 
@@ -49,6 +48,8 @@ export function Crane() {
                     <PivotControls
                         // we constrain the rotation of the elbow over x and z
                         activeAxes={[true, false, true]}
+                        // limit the rotation reach so we don't bump into ourselves
+                        rotationLimits={[undefined, [-2, 2], undefined]}
                         disableAxes
                         disableSliders
                         anchor={[-0.88, 1, -0.4]}
@@ -70,6 +71,7 @@ export function Crane() {
                         <PivotControls
                             // we constrain the rotation of the elbow over x and z
                             activeAxes={[true, false, true]}
+                            rotationLimits={[undefined, [-2, 2], undefined]}
                             disableAxes
                             disableSliders
                             anchor={[-0.75, 1, -0.4]}
