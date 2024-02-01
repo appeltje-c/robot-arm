@@ -1,22 +1,22 @@
-import * as React from 'react'
-import * as THREE from 'three'
+import React, {useContext, useRef, useState, useCallback, useMemo, FC} from 'react'
 import {ThreeEvent, useThree} from '@react-three/fiber'
 import {Line, Html} from '@react-three/drei'
 import clamp from 'lodash.clamp'
 import {context} from './context'
+import {Vector3, Matrix4, Ray, Group, Plane} from 'three'
 
-const clickDir = new THREE.Vector3()
-const intersectionDir = new THREE.Vector3()
+const clickDir = new Vector3()
+const intersectionDir = new Vector3()
 
 const toDegrees = (radians: number) => (radians * 180) / Math.PI
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
 
 const calculateAngle = (
-    clickPoint: THREE.Vector3,
-    intersectionPoint: THREE.Vector3,
-    origin: THREE.Vector3,
-    e1: THREE.Vector3,
-    e2: THREE.Vector3
+    clickPoint: Vector3,
+    intersectionPoint: Vector3,
+    origin: Vector3,
+    e1: Vector3,
+    e2: Vector3
 ) => {
     clickDir.copy(clickPoint).sub(origin)
     intersectionDir.copy(intersectionPoint).sub(origin)
@@ -52,16 +52,16 @@ const minimizeAngle = (angle: number) => {
     return result
 }
 
-const rotMatrix = new THREE.Matrix4()
-const posNew = new THREE.Vector3()
-const ray = new THREE.Ray()
-const intersection = new THREE.Vector3()
+const rotMatrix = new Matrix4()
+const posNew = new Vector3()
+const ray = new Ray()
+const intersection = new Vector3()
 
-export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; axis: 0 | 1 | 2 }> = ({
-                                                                                                         dir1,
-                                                                                                         dir2,
-                                                                                                         axis
-                                                                                                     }) => {
+export const AxisRotator: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
+                                                                                       dir1,
+                                                                                       dir2,
+                                                                                       axis
+                                                                                   }) => {
     const {
         rotationLimits,
         annotationsClass,
@@ -77,47 +77,48 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         onDrag,
         onDragEnd,
         userData
-    } = React.useContext(context)
+    } = useContext(context)
 
     // @ts-expect-error new in @react-three/fiber@7.0.5
     const camControls = useThree((state) => state.controls) as { enabled: boolean }
-    const divRef = React.useRef<HTMLDivElement>(null!)
-    const objRef = React.useRef<THREE.Group>(null!)
-    const angle0 = React.useRef<number>(0)
-    const angle = React.useRef<number>(0)
-    const clickInfo = React.useRef<{
-        clickPoint: THREE.Vector3
-        origin: THREE.Vector3
-        e1: THREE.Vector3
-        e2: THREE.Vector3
-        normal: THREE.Vector3
-        plane: THREE.Plane
+    const divRef = useRef<HTMLDivElement>(null!)
+    const objRef = useRef<Group>(null!)
+    const angle0 = useRef<number>(0)
+    const angle = useRef<number>(0)
+    const clickInfo = useRef<{
+        clickPoint: Vector3
+        origin: Vector3
+        e1: Vector3
+        e2: Vector3
+        normal: Vector3
+        plane: Plane
     } | null>(null)
-    const [isHovered, setIsHovered] = React.useState(false)
+    const [isHovered, setIsHovered] = useState(false)
 
-    const onPointerDown = React.useCallback(
-        (e: ThreeEvent<PointerEvent>) => {
+    const onPointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
+
             if (displayValues) {
                 divRef.current.innerText = `${toDegrees(angle.current).toFixed(0)}º`
                 divRef.current.style.display = 'block'
             }
+
             e.stopPropagation()
             const clickPoint = e.point.clone()
-            const origin = new THREE.Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
-            const e1 = new THREE.Vector3().setFromMatrixColumn(objRef.current.matrixWorld, 0).normalize()
-            const e2 = new THREE.Vector3().setFromMatrixColumn(objRef.current.matrixWorld, 1).normalize()
-            const normal = new THREE.Vector3().setFromMatrixColumn(objRef.current.matrixWorld, 2).normalize()
-            const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(normal, origin)
+            const origin = new Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
+            const e1 = new Vector3().setFromMatrixColumn(objRef.current.matrixWorld, 0).normalize()
+            const e2 = new Vector3().setFromMatrixColumn(objRef.current.matrixWorld, 1).normalize()
+            const normal = new Vector3().setFromMatrixColumn(objRef.current.matrixWorld, 2).normalize()
+            const plane = new Plane().setFromNormalAndCoplanarPoint(normal, origin)
             clickInfo.current = {clickPoint, origin, e1, e2, normal, plane}
             onDragStart({component: 'Rotator', axis, origin, directions: [e1, e2, normal]})
             camControls && (camControls.enabled = false)
-            // @ts-ignore
+            // @ts-ignore - setPointerCapture is not in the type definition
             e.target.setPointerCapture(e.pointerId)
         },
-        [camControls, onDragStart, axis]
+        [camControls, onDragStart, axis, displayValues]
     )
 
-    const onPointerMove = React.useCallback(
+    const onPointerMove = useCallback(
         (e: ThreeEvent<PointerEvent>) => {
             e.stopPropagation()
             if (!isHovered) setIsHovered(true)
@@ -132,7 +133,6 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
                 let deltaAngle = calculateAngle(clickPoint, intersection, origin, e1, e2)
                 let degrees = toDegrees(deltaAngle)
 
-                // @ts-ignore
                 if (e.shiftKey) {
                     degrees = Math.round(degrees / 10) * 10
                     deltaAngle = toRadians(degrees)
@@ -158,44 +158,46 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
                 onDrag(rotMatrix)
             }
         },
-        [onDrag, isHovered, rotationLimits, axis]
+        [onDrag, isHovered, rotationLimits, axis, displayValues]
     )
 
-    const onPointerUp = React.useCallback(
-        (e: ThreeEvent<PointerEvent>) => {
+    const onPointerUp = useCallback((e: ThreeEvent<PointerEvent>) => {
+
             if (displayValues) {
                 divRef.current.style.display = 'none'
             }
+
             e.stopPropagation()
             angle0.current = angle.current
             clickInfo.current = null
             onDragEnd()
             camControls && (camControls.enabled = true)
-            // @ts-ignore
+
+            // @ts-ignore - setPointerCapture is not in the type definition
             e.target.releasePointerCapture(e.pointerId)
         },
-        [camControls, onDragEnd]
+        [camControls, onDragEnd, displayValues]
     )
 
-    const onPointerOut = React.useCallback((e: any) => {
+    const onPointerOut = useCallback((e: any) => {
         e.stopPropagation()
         setIsHovered(false)
     }, [])
 
-    const matrixL = React.useMemo(() => {
+    const matrixL = useMemo(() => {
         const dir1N = dir1.clone().normalize()
         const dir2N = dir2.clone().normalize()
-        return new THREE.Matrix4().makeBasis(dir1N, dir2N, dir1N.clone().cross(dir2N))
+        return new Matrix4().makeBasis(dir1N, dir2N, dir1N.clone().cross(dir2N))
     }, [dir1, dir2])
 
     const r = fixed ? 0.65 : scale * 0.65
 
-    const arc = React.useMemo(() => {
+    const arc = useMemo(() => {
         const segments = 32
-        const points: THREE.Vector3[] = []
+        const points: Vector3[] = []
         for (let j = 0; j <= segments; j++) {
             const angle = (j * (Math.PI / 2)) / segments
-            points.push(new THREE.Vector3(Math.cos(angle) * r, Math.sin(angle) * r, 0))
+            points.push(new Vector3(Math.cos(angle) * r, Math.sin(angle) * r, 0))
         }
         return points
     }, [r])

@@ -1,55 +1,74 @@
-import React, {memo} from 'react'
+/*
+ * Copyright (C) 2024 - Martijn Benjamin
+ *
+ * -----
+ * Written for the Monumental technical assessment
+ * "Visualizing a Robotic Crane"
+ * -----
+ */
+import React, {useEffect, useState} from 'react'
 import {Canvas} from '@react-three/fiber'
-import {
-    GizmoHelper,
-    GizmoViewport,
-    OrbitControls,
-    Environment,
-    Stats,
-    AccumulativeShadows,
-    RandomizedLight,
-    PerspectiveCamera
-} from '@react-three/drei'
-import {Crane} from "@components/Crane";
-import Ground from "@components/Ground";
+import {GizmoHelper, GizmoViewport, OrbitControls, Environment, Stats, PerspectiveCamera} from '@react-three/drei'
+import {Crane} from '@components/model'
+import {Shadows, Ground} from '@components/stage'
+import {Monumental} from '@types'
+import socketIOClient from 'socket.io-client'
 
+/**
+ * The App component defines the hmi visible and control elements
+ *
+ * author Martijn Benjamin
+ */
 export default function App() {
 
+    // keep the data for the crane in state
+    const [robotData, setRobotData] = useState<Monumental.CraneData>()
+    const socket = socketIOClient('/')
+
+    useEffect(() => {
+
+        // no robot data then get it
+        if (!robotData) socket.emit("state:get")
+
+        // set received state changes in state
+        socket.on("state", (data: Monumental.CraneData) => {
+            setRobotData(data)
+        })
+
+    }, [socket])
+
     return (
-        <Canvas>
-            <PerspectiveCamera
-                makeDefault={true}
-                fov={40}
-                position={[0, 8, 25]}/>
+        <>
+            {
+                robotData &&
+              <Canvas>
 
-            { /** The Crane Model */}
-            <Crane/>
+                  {/** a camera */}
+                <PerspectiveCamera
+                  makeDefault
+                  fov={40}
+                  position={[10, 8, 25]}/>
 
-            <Shadows/>
+                  {/** our model */}
+                <Crane data={robotData}/>
 
-            <Ground/>
+                  {/** environment elements*/}
+                <Shadows/>
+                <Ground/>
+                <Environment preset="city"/>
 
-            <OrbitControls makeDefault/>
+                  {/** controls & helper */}
+                <OrbitControls makeDefault/>
+                <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
+                  <GizmoViewport labelColor="white" axisHeadScale={1}/>
+                </GizmoHelper>
 
-            <Environment preset="city"/>
+                  {/** fps & mem stats (add toggle to show / hide) */}
+                <Stats/>
 
-            <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
-                <GizmoViewport labelColor="white" axisHeadScale={1}/>
-            </GizmoHelper>
-
-            { /** Adding the Stats widget */}
-            <Stats/>
-
-            {/** Print renderer info
-             <RendererInfo/>
-             */}
-
-        </Canvas>
+              </Canvas>
+            }
+        </>
     )
 }
 
-const Shadows = memo(() => (
-    <AccumulativeShadows temporal frames={100} color="#9d4b4b" colorBlend={0.5} alphaTest={0.9} scale={20}>
-        <RandomizedLight amount={8} radius={4} position={[5, 5, -10]}/>
-    </AccumulativeShadows>
-))

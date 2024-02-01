@@ -1,14 +1,14 @@
-import * as React from 'react'
-import {useContext} from 'react'
-import * as THREE from 'three'
+import React from 'react'
+import {useContext, useCallback, useMemo, useRef, useState, FC} from 'react'
 import {ThreeEvent, useThree} from '@react-three/fiber'
 import {Line, Html} from '@react-three/drei'
 import {context} from './context'
+import {Vector3, Matrix4, Group, Quaternion} from 'three'
 
-const vec1 = new THREE.Vector3()
-const vec2 = new THREE.Vector3()
+const vec1 = new Vector3()
+const vec2 = new Vector3()
 
-export const calculateOffset = (clickPoint: THREE.Vector3, normal: THREE.Vector3, rayStart: THREE.Vector3, rayDir: THREE.Vector3) => {
+export const calculateOffset = (clickPoint: Vector3, normal: Vector3, rayStart: Vector3, rayDir: Vector3) => {
 
     const e1 = normal.dot(normal)
     const e2 = normal.dot(clickPoint) - normal.dot(rayStart)
@@ -28,14 +28,13 @@ export const calculateOffset = (clickPoint: THREE.Vector3, normal: THREE.Vector3
         .add(rayStart)
         .sub(clickPoint)
 
-    const offset = -vec1.dot(vec2) / vec1.dot(vec1)
-    return offset
+    return -vec1.dot(vec2) / vec1.dot(vec1)
 }
 
-const upV = new THREE.Vector3(0, 1, 0)
-const offsetMatrix = new THREE.Matrix4()
+const upV = new Vector3(0, 1, 0)
+const offsetMatrix = new Matrix4()
 
-export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
+export const AxisArrow: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
 
     const {
         translation,
@@ -57,22 +56,22 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
     // @ts-expect-error new in @react-three/fiber@7.0.5
     const camControls = useThree((state) => state.controls) as { enabled: boolean }
-    const divRef = React.useRef<HTMLDivElement>(null!)
-    const objRef = React.useRef<THREE.Group>(null!)
-    const clickInfo = React.useRef<{ clickPoint: THREE.Vector3; dir: THREE.Vector3 } | null>(null)
-    const offset0 = React.useRef<number>(0)
-    const [isHovered, setIsHovered] = React.useState(false)
+    const divRef = useRef<HTMLDivElement>(null!)
+    const objRef = useRef<Group>(null!)
+    const clickInfo = useRef<{ clickPoint: Vector3; dir: Vector3 } | null>(null)
+    const offset0 = useRef<number>(0)
+    const [isHovered, setIsHovered] = useState(false)
 
-    const onPointerDown = React.useCallback(
+    const onPointerDown = useCallback(
         (e: ThreeEvent<PointerEvent>) => {
             if (displayValues) {
                 divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
                 divRef.current.style.display = 'block'
             }
             e.stopPropagation()
-            const rotation = new THREE.Matrix4().extractRotation(objRef.current.matrixWorld)
+            const rotation = new Matrix4().extractRotation(objRef.current.matrixWorld)
             const clickPoint = e.point.clone()
-            const origin = new THREE.Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
+            const origin = new Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
             const dir = direction.clone().applyMatrix4(rotation).normalize()
             clickInfo.current = {clickPoint, dir}
             offset0.current = translation.current[axis]
@@ -81,10 +80,10 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
             // @ts-ignore - setPointerCapture is not in the type definition
             e.target.setPointerCapture(e.pointerId)
         },
-        [direction, camControls, onDragStart, translation, axis]
+        [direction, camControls, onDragStart, translation, axis, displayValues]
     )
 
-    const onPointerMove = React.useCallback(
+    const onPointerMove = useCallback(
         (e: ThreeEvent<PointerEvent>) => {
             e.stopPropagation()
             if (!isHovered) setIsHovered(true)
@@ -100,10 +99,10 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
                 onDrag(offsetMatrix)
             }
         },
-        [onDrag, isHovered, translation, translationLimits, axis]
+        [onDrag, isHovered, translation, translationLimits, axis, displayValues]
     )
 
-    const onPointerUp = React.useCallback(
+    const onPointerUp = useCallback(
         (e: ThreeEvent<PointerEvent>) => {
             if (displayValues) divRef.current.style.display = 'none'
             e.stopPropagation()
@@ -113,20 +112,20 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
             // @ts-ignore - releasePointerCapture & PointerEvent#pointerId is not in the type definition
             e.target.releasePointerCapture(e.pointerId)
         },
-        [camControls, onDragEnd]
+        [camControls, onDragEnd, displayValues]
     )
 
-    const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
+    const onPointerOut = useCallback((e: ThreeEvent<PointerEvent>) => {
         e.stopPropagation()
         setIsHovered(false)
     }, [])
 
-    const {cylinderLength, coneWidth, coneLength, matrixL} = React.useMemo(() => {
+    const {cylinderLength, coneWidth, coneLength, matrixL} = useMemo(() => {
         const coneWidth = fixed ? (lineWidth / scale) * 1.6 : scale / 20
         const coneLength = fixed ? 0.2 : scale / 5
         const cylinderLength = fixed ? 1 - coneLength : scale - coneLength
-        const quaternion = new THREE.Quaternion().setFromUnitVectors(upV, direction.clone().normalize())
-        const matrixL = new THREE.Matrix4().makeRotationFromQuaternion(quaternion)
+        const quaternion = new Quaternion().setFromUnitVectors(upV, direction.clone().normalize())
+        const matrixL = new Matrix4().makeRotationFromQuaternion(quaternion)
         return {cylinderLength, coneWidth, coneLength, matrixL}
     }, [direction, scale, lineWidth, fixed])
 
@@ -174,7 +173,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
                 />
                 <mesh raycast={() => null} position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={500}>
                     <coneGeometry args={[coneWidth, coneLength, 24, 1]}/>
-                    <meshBasicMaterial transparent depthTest={depthTest} color={color_} opacity={opacity} polygonOffset
+                    <meshBasicMaterial transparent={true} depthTest={depthTest} color={color_} opacity={opacity} polygonOffset
                                        polygonOffsetFactor={-10}/>
                 </mesh>
             </group>

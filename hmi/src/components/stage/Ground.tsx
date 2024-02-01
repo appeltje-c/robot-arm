@@ -1,7 +1,15 @@
+/*
+ * Copyright (C) 2024 - Martijn Benjamin
+ *
+ * -----
+ * Written for the Monumental technical assessment
+ * "Visualizing a Robotic Crane"
+ * -----
+ */
 import React from 'react'
 import {Grid} from '@react-three/drei'
 
-function Ground() {
+export const Ground = () => {
 
     const gridConfig = {
         cellSize: 0.5,
@@ -18,5 +26,3 @@ function Ground() {
 
     return <Grid position={[0, -0.01, 0]} args={[10.5, 10.5]} {...gridConfig} />
 }
-
-export default Ground

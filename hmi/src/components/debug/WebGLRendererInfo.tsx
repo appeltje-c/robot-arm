@@ -13,6 +13,7 @@ import {useEffect} from 'react'
  * According to these docs https://docs.pmnd.rs/react-three-fiber/API/hooks#usethree
  * useThree gl is the WebGL renderer which holds some useful information
  *
+ * author Martijn Benjamin
  */
 const WebGLRendererInfo = () => {
 
