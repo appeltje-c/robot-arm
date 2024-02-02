@@ -26,7 +26,7 @@ mongoose.connect(process.env.MONGODB_URL, {}).then(() => {
     // Setup websockets channel
     const io = new Server(server, {cors: {origin: '*'}})
 
-    // 'Bind' the controllers
+    // 'Bind' the controllers on incoming socket connection
     io.on('connection', socket => {
         stateController(socket)
     })
