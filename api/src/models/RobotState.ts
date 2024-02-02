@@ -20,41 +20,45 @@ enum RobotNode {
 }
 
 export type RobotStateDocument = mongoose.Document & {
-    [RobotNode.mainColumn]: { position: number[] }
-    [RobotNode.upperArm]: { position: number[] }
-    [RobotNode.elbow]: { position: number[] }
-    [RobotNode.lowerArm]: { position: number[] }
-    [RobotNode.wrist]: { position: number[] }
-    [RobotNode.wristExtension]: { position: number[] }
-    [RobotNode.hand]: { position: number[] }
-    [RobotNode.gripper]: { position: number[] }
+    nodes: {
+        [RobotNode.mainColumn]: { position: number[] }
+        [RobotNode.upperArm]: { position: number[] }
+        [RobotNode.elbow]: { position: number[] }
+        [RobotNode.lowerArm]: { position: number[] }
+        [RobotNode.wrist]: { position: number[] }
+        [RobotNode.wristExtension]: { position: number[] }
+        [RobotNode.hand]: { position: number[] }
+        [RobotNode.gripper]: { position: number[] }
+    }
 }
 
 const robotStateSchema = new mongoose.Schema<RobotStateDocument>(
     {
-        'main_column': {
-            position: Array<number>
-        },
-        'upper_arm': {
-            position: Array<number>
-        },
-        'elbow': {
-            position: Array<number>
-        },
-        'lower_arm': {
-            position: Array<number>
-        },
-        'wrist': {
-            position: Array<number>
-        },
-        'wrist_extension': {
-            position: Array<number>
-        },
-        'hand': {
-            position: Array<number>
-        },
-        'gripper': {
-            position: Array<number>
+        nodes: {
+            'main_column': {
+                position: Array<number>
+            },
+            'upper_arm': {
+                position: Array<number>
+            },
+            'elbow': {
+                position: Array<number>
+            },
+            'lower_arm': {
+                position: Array<number>
+            },
+            'wrist': {
+                position: Array<number>
+            },
+            'wrist_extension': {
+                position: Array<number>
+            },
+            'hand': {
+                position: Array<number>
+            },
+            'gripper': {
+                position: Array<number>
+            }
         }
     },
     {

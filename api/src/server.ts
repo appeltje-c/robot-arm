@@ -11,24 +11,29 @@ import express from 'express'
 import logger from './config/logger'
 import {Server} from 'socket.io'
 import mongoose from 'mongoose'
-import stateController from './controllers/state.controller'
+import stateController, {seed} from './controllers/state.controller'
 
 const app = express()
 
 // First ensure we get a mongo connection
 mongoose.connect(process.env.MONGODB_URL, {}).then(() => {
 
-    // Start Express server
-    const server = app.listen(process.env.PORT, () => {
-        logger.info(`App is running at http://localhost:${process.env.PORT}`)
-    })
+    // seed if needed
+    seed().then(() => {
 
-    // Setup websockets channel
-    const io = new Server(server, {cors: {origin: '*'}})
+        // Start Express server
+        const server = app.listen(process.env.PORT, () => {
+            logger.info(`App is running at http://localhost:${process.env.PORT}`)
+        })
 
-    // 'Bind' the controllers on incoming socket connection
-    io.on('connection', socket => {
-        stateController(socket)
+        // Setup websockets channel
+        const io = new Server(server, {cors: {origin: '*'}})
+
+        // 'Bind' the controllers on incoming socket connection
+        io.on('connection', socket => {
+            stateController(socket)
+        })
+
     })
 
 }).catch(err => {
