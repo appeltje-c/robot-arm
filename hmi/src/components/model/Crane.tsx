@@ -40,7 +40,7 @@ export const Crane = ({data}: CraneProps) => {
 
                 <mesh geometry={nodes[CraneNode.mainColumn].geometry}
                       material={nodes[CraneNode.mainColumn].material}
-                      position={data[CraneNode.mainColumn].position}/>
+                      position={data.nodes[CraneNode.mainColumn].position}/>
 
                 <Control activeAxes={[false, true, false]}
                          translationLimits={[undefined, [-1, 1.8], undefined]}
@@ -51,7 +51,7 @@ export const Crane = ({data}: CraneProps) => {
 
                     <mesh geometry={nodes[CraneNode.upperArm].geometry}
                           material={nodes[CraneNode.upperArm].material}
-                          position={data[CraneNode.upperArm].position}
+                          position={data.nodes[CraneNode.upperArm].position}
                           scale={[0.684, 1, 1]}/>
 
                     <Control activeAxes={[true, false, true]}
@@ -63,12 +63,12 @@ export const Crane = ({data}: CraneProps) => {
 
                         <mesh geometry={nodes[CraneNode.elbow].geometry}
                               material={nodes[CraneNode.elbow].material}
-                              position={data[CraneNode.elbow].position}
+                              position={data.nodes[CraneNode.elbow].position}
                               scale={[0.345, 0.122, 0.345]}/>
 
                         <mesh geometry={nodes[CraneNode.lowerArm].geometry}
                               material={nodes[CraneNode.lowerArm].material}
-                              position={data[CraneNode.lowerArm].position}
+                              position={data.nodes[CraneNode.lowerArm].position}
                               scale={[0.684, 1, 1]}/>
 
                         <Control
@@ -81,17 +81,17 @@ export const Crane = ({data}: CraneProps) => {
 
                             <mesh geometry={nodes[CraneNode.wrist].geometry}
                                   material={nodes[CraneNode.wrist].material}
-                                  position={data[CraneNode.wrist].position}
+                                  position={data.nodes[CraneNode.wrist].position}
                                   scale={[0.345, 0.122, 0.345]}/>
 
                             <mesh geometry={nodes[CraneNode.wristExtension].geometry}
                                   material={nodes[CraneNode.wristExtension].material}
-                                  position={data[CraneNode.wristExtension].position}
+                                  position={data.nodes[CraneNode.wristExtension].position}
                                   scale={0.264}/>
 
                             <mesh geometry={nodes[CraneNode.hand].geometry}
                                   material={nodes[CraneNode.hand].material}
-                                  position={data[CraneNode.hand].position}
+                                  position={data.nodes[CraneNode.hand].position}
                                   scale={[1, 0.068, 0.327]}/>
 
                             <Control activeAxes={[true, false, false]}
@@ -102,7 +102,7 @@ export const Crane = ({data}: CraneProps) => {
 
                                 <mesh geometry={nodes[CraneNode.gripper].geometry}
                                       material={nodes[CraneNode.gripper].material}
-                                      position={data[CraneNode.gripper].position}
+                                      position={data.nodes[CraneNode.gripper].position}
                                       scale={[-0.01, -0.132, -0.325]}/>
 
                             </Control>

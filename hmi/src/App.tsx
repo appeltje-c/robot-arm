@@ -37,6 +37,8 @@ export default function App() {
 
     }, [socket])
 
+    console.info(robotData)
+
     return (
         <>
             {

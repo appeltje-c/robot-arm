@@ -32,14 +32,16 @@ export namespace Monumental {
     }
 
     export interface CraneData {
-        [CraneNode.mainColumn]: { position: Vector3 },
-        [CraneNode.upperArm]: { position: Vector3 },
-        [CraneNode.elbow]: { position: Vector3 },
-        [CraneNode.lowerArm]: { position: Vector3 },
-        [CraneNode.wrist]: { position: Vector3 },
-        [CraneNode.wristExtension]: { position: Vector3 },
-        [CraneNode.hand]: { position: Vector3 },
-        [CraneNode.gripper]: { position: Vector3 }
+        nodes: {
+            [CraneNode.mainColumn]: { position: Vector3 },
+            [CraneNode.upperArm]: { position: Vector3 },
+            [CraneNode.elbow]: { position: Vector3 },
+            [CraneNode.lowerArm]: { position: Vector3 },
+            [CraneNode.wrist]: { position: Vector3 },
+            [CraneNode.wristExtension]: { position: Vector3 },
+            [CraneNode.hand]: { position: Vector3 },
+            [CraneNode.gripper]: { position: Vector3 }
+        }
     }
 
     export type DreiGLTF = GLTF & {
