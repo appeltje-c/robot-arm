@@ -9,7 +9,7 @@
 services:
 
   # The Robot hmi
-  ops:
+  hmi:
     container_name: robot-hmi
     build:
       context: hmi

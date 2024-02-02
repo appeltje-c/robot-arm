@@ -3,11 +3,11 @@
 > written
 > by [Martijn Benjamin](https://www.linkedin.com/in/martijn-benjamin/) ([Appeltje-C](https://github.com/appeltje-c))
 > for [Monumental](https://www.monumental.co/)
->
 
 ## Intro
 
-This project is my implementation of the Monumental "Visualizing a Robotic Crane" technical assessment.
+This project is my implementation of the Monumental "Visualizing a Robotic Crane" technical assessment and my 3D and
+Robotics study project going forward.
 
 The project consists of an API, React Application and the Blender crane model in the folders:
 
@@ -37,9 +37,7 @@ When the Docker output reads
 
 <img src="./docs/docker.png" alt="drawing" width="500"/>
 
-the project is running. 
-
-Wait a minute for the hmi to fully start and then open [http://localhost:3000](http://localhost:3000)
+the project is running, you can open [http://localhost:3000](http://localhost:3000)
 
 To stop the containers
 
@@ -65,6 +63,12 @@ Here is a collection of online resources I used to get familiar with Robotic and
 
 *Rabbit hole warning*
 
+> Three / Three Fiber / Drei <br/>
+> https://github.com/pmndrs/react-three-fiber <br/>
+> https://github.com/pmndrs/zustand <br/>
+> https://github.com/pmndrs/drei <br/>
+> https://github.com/pmndrs/gltfjsx <br/>
+>
 > ViewPort<br/>
 > https://codesandbox.io/p/sandbox/multiple-views-with-uniform-controls-r9w2ob
 
@@ -102,3 +106,25 @@ Here is a collection of online resources I used to get familiar with Robotic and
 > https://github.com/glumb/kinematics <br/>
 > https://github.com/gkjohnson/closed-chain-ik-js.git <br/>
 > https://github.com/jsdf/BussIK-js <br/>
+>
+> Performance <br/>
+> https://threejs-journey.com/lessons/performance-tips
+>
+>
+
+# Learn
+
+> Docs <br/>
+> https://docs.pmnd.rs/ <br/>
+> https://docs.pmnd.rs/react-three-fiber/getting-started/introduction> <br/>
+> https://threejs.org/docs/index.html <br/>
+> https://github.com/pmndrs/drei#readme <br/>
+>
+
+> Tutorials & Learn by Doing <br/>
+> https://sbcode.net/react-three-fiber <br/>
+> https://threejs.org/examples/#webgl_animation_keyframes <br/>
+>
+>
+> 
+

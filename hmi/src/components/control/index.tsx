@@ -11,7 +11,7 @@ import {useThree} from '@react-three/fiber'
 import {Translate} from './Translate'
 import {Rotate} from './Rotate'
 import {context} from './context'
-import {Vector3, Matrix4, Box3, Group} from "three";
+import {Vector3, Matrix4, Box3, Group} from 'three'
 import {Monumental} from '@types'
 
 // local matrices

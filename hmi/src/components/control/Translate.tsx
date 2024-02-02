@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2024 - Martijn Benjamin
+ *
+ * -----
+ * Written for the Monumental technical assessment
+ * "Visualizing a Robotic Crane"
+ * -----
+ */
 import React, {useContext, useCallback, useMemo, useRef, useState, FC} from 'react'
 import {ThreeEvent, useThree} from '@react-three/fiber'
 import {Line, Html} from '@react-three/drei'

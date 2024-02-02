@@ -8,13 +8,13 @@
 #
 FROM node:lts-buster
 
-WORKDIR /usr/src/ops
+WORKDIR /usr/src/hmi
 
-COPY package.json /usr/src/ops
-COPY yarn.lock /usr/src/ops
+COPY package.json /usr/src/hmi
+COPY yarn.lock /usr/src/hmi
 RUN yarn install
 
-COPY . /usr/src/ops
+COPY . /usr/src/hmi
 
 EXPOSE 3000
 

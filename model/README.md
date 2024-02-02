@@ -1,4 +1,3 @@
-
 # Monumental Model
 
 
