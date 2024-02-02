@@ -6,13 +6,14 @@
  * "Visualizing a Robotic Crane"
  * -----
  */
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {Canvas} from '@react-three/fiber'
 import {GizmoHelper, GizmoViewport, OrbitControls, Environment, Stats, PerspectiveCamera} from '@react-three/drei'
 import {Crane} from '@components/model'
 import {Shadows, Ground} from '@components/stage'
-import {Monumental} from '@types'
-import socketIOClient from 'socket.io-client'
+//import {Monumental} from '@types'
+//import socketIOClient from 'socket.io-client'
+import {Vector3} from "three";
 
 /**
  * The App component defines the hmi visible and control elements
@@ -22,6 +23,7 @@ import socketIOClient from 'socket.io-client'
 export default function App() {
 
     // keep the data for the crane in state
+    /*
     const [robotData, setRobotData] = useState<Monumental.CraneData>()
     const socket = socketIOClient('/')
 
@@ -36,6 +38,34 @@ export default function App() {
         })
 
     }, [socket])
+    */
+
+    const robotData = {
+        'main_column': {
+            position: new Vector3(0, 1.462, 0)
+        },
+        'upper_arm': {
+            position: new Vector3(2.335, 0, 0.094)
+        },
+        'elbow': {
+            position: new Vector3(2.6, 5.933, 0.074)
+        },
+        'lower_arm': {
+            position: new Vector3(4.39, -0.984, 0.094)
+        },
+        'wrist': {
+            position: new Vector3(4.701, 4.949, 0.101)
+        },
+        'wrist_extension': {
+            position: new Vector3(4.691, 4.611, 0.007)
+        },
+        'hand': {
+            position: new Vector3(5.368, 3.78, 0.049)
+        },
+        'gripper': {
+            position: new Vector3(5.805, 3.585, 0.006)
+        }
+    }
 
     return (
         <>

@@ -6,12 +6,10 @@
  * "Visualizing a Robotic Crane"
  * -----
  */
-import {PivotControls} from '@components/pivotControls'
-import {useGLTF} from '@react-three/drei'
 import React from 'react'
+import {Controls} from '@components/controls'
+import {useGLTF} from '@react-three/drei'
 import {Monumental} from '@types'
-
-const CraneNode = Monumental.CraneNode
 
 interface CraneProps {
     data: Monumental.CraneData
@@ -28,19 +26,18 @@ export const Crane = ({data}: CraneProps) => {
     // load the crane model
     // the nodes and materials are missing from the GLTF and extending does resolve, as unknown to avoid this
     const {nodes} = useGLTF('/crane.glb') as unknown as Monumental.DreiGLTF
+    const CraneNode = Monumental.CraneNode
 
     return (
         <group>
 
-            <PivotControls
+            {/** */}
+            <Controls
                 disableAxes
                 // we constrain the rotation of the main column over x and z
                 activeAxes={[true, false, true]}
-                disableSliders
                 anchor={[-0.721, -1, -0]}
                 scale={5}
-                lineWidth={2}
-                depthTest={false}
                 userData={[CraneNode.mainColumn]}>
 
                 {/* main column mesh */}
@@ -51,15 +48,12 @@ export const Crane = ({data}: CraneProps) => {
                 </mesh>
 
                 {/* Translation control for the main column */}
-                <PivotControls activeAxes={[false, true, false]} // y-axis only
-                               translationLimits={[undefined, [-1, 1.8], undefined]} // don't go of the rail
-                               disableSliders
-                               disableRotations
-                               disableScaling
-                               depthTest={false}
-                               anchor={[-0.8, 0.5, 0]}
-                               scale={1}
-                               userData={[CraneNode.upperArm]}>
+                <Controls activeAxes={[false, true, false]} // y-axis only
+                          translationLimits={[undefined, [-1, 1.8], undefined]} // don't go of the rail
+                          disableRotations
+                          anchor={[-0.8, 0.5, 0]}
+                          scale={1}
+                          userData={[CraneNode.upperArm]}>
 
                     <mesh geometry={nodes[CraneNode.upperArm].geometry}
                           material={nodes[CraneNode.upperArm].material}
@@ -67,17 +61,14 @@ export const Crane = ({data}: CraneProps) => {
                           scale={[0.684, 1, 1]}/>
 
                     {/** Rotation control for the elbow*/}
-                    <PivotControls
+                    <Controls
                         // we constrain the rotation of the elbow over x and z
                         activeAxes={[true, false, true]}
                         // limit the rotation reach so we don't bump into ourselves
                         rotationLimits={[undefined, [-2, 2], undefined]}
                         disableAxes
-                        disableSliders
                         anchor={[-0.889, 1, -0.4]}
                         scale={2}
-                        depthTest={false}
-                        lineWidth={2}
                         userData={[CraneNode.elbow]}>
 
                         <mesh geometry={nodes[CraneNode.elbow].geometry}
@@ -90,16 +81,13 @@ export const Crane = ({data}: CraneProps) => {
                               position={data[CraneNode.lowerArm].position}
                               scale={[0.684, 1, 1]}/>
 
-                        <PivotControls
+                        <Controls
                             // we constrain the rotation of the elbow over x and z
                             activeAxes={[true, false, true]}
                             rotationLimits={[undefined, [-2, 2], undefined]}
                             disableAxes
-                            disableSliders
                             anchor={[-0.75, 1, -0.4]}
                             scale={2}
-                            depthTest={true}
-                            lineWidth={2}
                             userData={[CraneNode.wrist]}>
 
                             <mesh geometry={nodes[CraneNode.wrist].geometry}
@@ -117,24 +105,22 @@ export const Crane = ({data}: CraneProps) => {
                                   position={data[CraneNode.hand].position}
                                   scale={[1, 0.068, 0.327]}/>
 
-                            <PivotControls activeAxes={[true, false, false]}
-                                           disableScaling
-                                           translationLimits={[[-0.5, 0.2], undefined, undefined]}
-                                           depthTest={false}
-                                           anchor={[0, 0, 0]}
-                                           scale={0.75}
-                                           userData={[CraneNode.gripper]}>
+                            <Controls activeAxes={[true, false, false]}
+                                      translationLimits={[[-0.5, 0.2], undefined, undefined]}
+                                      anchor={[0, 0, 0]}
+                                      scale={0.75}
+                                      userData={[CraneNode.gripper]}>
 
                                 <mesh geometry={nodes[CraneNode.gripper].geometry}
                                       material={nodes[CraneNode.gripper].material}
                                       position={data[CraneNode.gripper].position}
                                       scale={[-0.01, -0.132, -0.325]}/>
 
-                            </PivotControls>
-                        </PivotControls>
-                    </PivotControls>
-                </PivotControls>
-            </PivotControls>
+                            </Controls>
+                        </Controls>
+                    </Controls>
+                </Controls>
+            </Controls>
 
         </group>
     )

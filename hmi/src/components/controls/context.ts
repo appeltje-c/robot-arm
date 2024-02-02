@@ -1,5 +1,13 @@
+/*
+ * Copyright (C) 2024 - Martijn Benjamin
+ *
+ * -----
+ * Written for the Monumental technical assessment
+ * "Visualizing a Robotic Crane"
+ * -----
+ */
 import {createContext, MutableRefObject} from 'react'
-import {Vector3, Matrix4, Object3D} from "three";
+import {Vector3, Matrix4, Object3D} from 'three'
 
 export type OnDragStartProps = {
     component: 'Arrow' | 'Slider' | 'Rotator' | 'Scale'
@@ -8,26 +16,20 @@ export type OnDragStartProps = {
     directions: Vector3[]
 }
 
-export type PivotContext = {
+export type ControlContext = {
     onDragStart: (props: OnDragStartProps) => void
     onDrag: (mdW: Matrix4) => void
     onDragEnd: () => void
     translation: { current: [number, number, number] }
     translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
     rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
-    axisColors: [string | number, string | number, string | number]
-    hoveredColor: string | number
-    opacity: number
     scale: number
-    lineWidth: number
-    fixed: boolean
     displayValues: boolean
-    depthTest: boolean
     userData?: { [key: string]: any }
     annotationsClass?: string
 }
 
-export const context = createContext<PivotContext>(null!)
+export const context = createContext<ControlContext>(null!)
 
 const isRef = (object: any): object is MutableRefObject<Object3D> => object && object.current
 

@@ -3,18 +3,22 @@
 
 Todo:
 
-- Data comms & storage
-- Gizmo placing
-- add inverse kinematics based on gripper relocation
+- work through the controls to do: Data comms & storage
+- Gizmo placing, rinse & repeat, try to make it as good as you can
+- remove properties where useful to clear up things
+
+check:
+- autoTransform={false}
+- 
 
 
+Bonus: add inverse kinematics based on gripper relocation
 
 
 https://github.com/pmndrs/gltfjsx
 
 CCDIKResolver
 https://threejs.org/docs/#examples/en/animations/CCDIKSolver
-
 
 https://github.com/pmndrs/react-three-fiber
 
@@ -39,6 +43,3 @@ https://threejs-journey.com/lessons/performance-tips
 - Use spector js, check how many draw calls are being made
 
 - Inspect the renderer information
-
-
-

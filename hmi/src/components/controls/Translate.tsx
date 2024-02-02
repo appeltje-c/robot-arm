@@ -1,5 +1,4 @@
-import React from 'react'
-import {useContext, useCallback, useMemo, useRef, useState, FC} from 'react'
+import React, {useContext, useCallback, useMemo, useRef, useState, FC} from 'react'
 import {ThreeEvent, useThree} from '@react-three/fiber'
 import {Line, Html} from '@react-three/drei'
 import {context} from './context'
@@ -14,16 +13,13 @@ export const calculateOffset = (clickPoint: Vector3, normal: Vector3, rayStart: 
     const e2 = normal.dot(clickPoint) - normal.dot(rayStart)
     const e3 = normal.dot(rayDir)
 
-    if (e3 === 0) {
-        return -e2 / e1
-    }
+    if (e3 === 0) return -e2 / e1
 
-    vec1
-        .copy(rayDir)
+    vec1.copy(rayDir)
         .multiplyScalar(e1 / e3)
         .sub(normal)
-    vec2
-        .copy(rayDir)
+
+    vec2.copy(rayDir)
         .multiplyScalar(e2 / e3)
         .add(rayStart)
         .sub(clickPoint)
@@ -34,20 +30,14 @@ export const calculateOffset = (clickPoint: Vector3, normal: Vector3, rayStart: 
 const upV = new Vector3(0, 1, 0)
 const offsetMatrix = new Matrix4()
 
-export const AxisArrow: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
+export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
 
     const {
         translation,
         translationLimits,
         annotationsClass,
-        depthTest,
         scale,
-        lineWidth,
-        fixed,
-        axisColors,
-        hoveredColor,
         displayValues,
-        opacity,
         onDragStart,
         onDrag,
         onDragEnd,
@@ -121,15 +111,16 @@ export const AxisArrow: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
     }, [])
 
     const {cylinderLength, coneWidth, coneLength, matrixL} = useMemo(() => {
-        const coneWidth = fixed ? (lineWidth / scale) * 1.6 : scale / 20
-        const coneLength = fixed ? 0.2 : scale / 5
-        const cylinderLength = fixed ? 1 - coneLength : scale - coneLength
+        const coneWidth = scale / 20
+        const coneLength = scale / 5
+        const cylinderLength = scale - coneLength
         const quaternion = new Quaternion().setFromUnitVectors(upV, direction.clone().normalize())
         const matrixL = new Matrix4().makeRotationFromQuaternion(quaternion)
         return {cylinderLength, coneWidth, coneLength, matrixL}
-    }, [direction, scale, lineWidth, fixed])
+    }, [direction, scale])
 
-    const color_ = isHovered ? hoveredColor : axisColors[axis]
+    const axisColors = ['#ff2060', '#20df80', '#2080ff']
+    const color_ = isHovered ? '#ffff40' : axisColors[axis]
 
     return (
         <group ref={objRef}>
@@ -144,7 +135,8 @@ export const AxisArrow: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
                     <div
                         style={{
                             display: 'none',
-                            background: '#151520',
+                            fontFamily: 'monospace',
+                            background: '#F84823',
                             color: 'white',
                             padding: '6px 8px',
                             borderRadius: 7,
@@ -162,18 +154,16 @@ export const AxisArrow: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
                 <Line
                     transparent
                     raycast={() => null}
-                    depthTest={depthTest}
                     points={[0, 0, 0, 0, cylinderLength, 0] as any}
-                    lineWidth={lineWidth}
+                    lineWidth={2}
                     color={color_ as any}
-                    opacity={opacity}
                     polygonOffset
                     renderOrder={1}
-                    polygonOffsetFactor={-10}
-                />
+                    polygonOffsetFactor={-10}/>
                 <mesh raycast={() => null} position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={500}>
                     <coneGeometry args={[coneWidth, coneLength, 24, 1]}/>
-                    <meshBasicMaterial transparent={true} depthTest={depthTest} color={color_} opacity={opacity} polygonOffset
+                    <meshBasicMaterial transparent={true} color={color_}
+                                       polygonOffset
                                        polygonOffsetFactor={-10}/>
                 </mesh>
             </group>

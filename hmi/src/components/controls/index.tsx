@@ -1,49 +1,20 @@
-import React, {useEffect, useMemo, useImperativeHandle, useRef} from 'react'
-import {Size, useFrame, useThree} from '@react-three/fiber'
-
-import {AxisArrow} from './AxisArrow'
-import {AxisRotator} from './AxisRotator'
+/*
+ * Copyright (C) 2024 - Martijn Benjamin
+ *
+ * -----
+ * Written for the Monumental technical assessment
+ * "Visualizing a Robotic Crane"
+ * -----
+ */
+import React, {useEffect, useMemo, useImperativeHandle, useRef, forwardRef, MutableRefObject, ReactNode} from 'react'
+import {useThree} from '@react-three/fiber'
+import {Translate} from './Translate'
+import {Rotate} from './Rotate'
 import {context, OnDragStartProps, resolveObject} from './context'
-import {Vector3, Camera, Matrix4, Box3, Object3D, Group, Quaternion} from "three";
+import {Vector3, Matrix4, Box3, Object3D, Group, Quaternion} from "three";
 
-const tV0 = new Vector3()
-const tV1 = new Vector3()
-const tV2 = new Vector3()
-
-const getPoint2 = (point3: Vector3, camera: Camera, size: Size) => {
-    const widthHalf = size.width / 2
-    const heightHalf = size.height / 2
-    camera.updateMatrixWorld(false)
-    const vector = point3.project(camera)
-    vector.x = vector.x * widthHalf + widthHalf
-    vector.y = -(vector.y * heightHalf) + heightHalf
-    return vector
-}
-
-const getPoint3 = (point2: Vector3, camera: Camera, size: Size, zValue: number = 1) => {
-    const vector = tV0.set((point2.x / size.width) * 2 - 1, -(point2.y / size.height) * 2 + 1, zValue)
-    vector.unproject(camera)
-    return vector
-}
-
-export const calculateScaleFactor = (point3: Vector3, radiusPx: number, camera: Camera, size: Size) => {
-    const point2 = getPoint2(tV2.copy(point3), camera, size)
-    let scale = 0
-    for (let i = 0; i < 2; ++i) {
-        const point2off = tV1.copy(point2).setComponent(i, point2.getComponent(i) + radiusPx)
-        const point3off = getPoint3(point2off, camera, size, point2off.z)
-        scale = Math.max(scale, point3.distanceTo(point3off))
-    }
-    return scale
-}
-
-// onDrag?: (local: Matrix4, deltaL: Matrix4, world: Matrix4, deltaW: Matrix4) => void
-
-// Local
 const mL0 = new Matrix4()
-// World Matrix4 Data
 const mW0 = new Matrix4()
-
 const mP = new Matrix4()
 const mPInv = new Matrix4()
 const mW = new Matrix4()
@@ -58,23 +29,13 @@ const vSize = new Vector3()
 const vAnchorOffset = new Vector3()
 const vPosition = new Vector3()
 
-const xDir = new Vector3(1, 0, 0)
-const yDir = new Vector3(0, 1, 0)
-const zDir = new Vector3(0, 0, 1)
-
-type PivotControlsProps = {
+type ControlsProps = {
     /** Scale of the gizmo, 1 */
     scale?: number
-    /** Width of the gizmo lines, this is a THREE.Line2 prop, 2.5 */
-    lineWidth?: number
-    /** If fixed is true is remains constant in size, scale is now in pixels, false */
-    fixed?: boolean
-    /** Pivot does not act as a group, it won't shift contents but can offset in position */
-    offset?: [number, number, number]
     /** Starting rotation */
     rotation?: [number, number, number]
     /** Attached mode, requires a ref to the THREE.Object3D to be transformed */
-    object?: Object3D | React.MutableRefObject<Object3D>
+    object?: Object3D | MutableRefObject<Object3D>
     /** Starting matrix */
     matrix?: Matrix4
     /** BBAnchor, each axis can be between -1/0/+1 */
@@ -83,22 +44,13 @@ type PivotControlsProps = {
     autoTransform?: boolean
     /** Allows you to switch individual axes off */
     activeAxes?: [boolean, boolean, boolean]
-
-    /** disable scaling */
-    disableScaling?: boolean
-
     disableAxes?: boolean
-    disableSliders?: boolean
     disableRotations?: boolean
 
     /** Limits */
     translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
     rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
 
-    /** RGB colors */
-    axisColors?: [string | number, string | number, string | number]
-    /** Color of the hovered item */
-    hoveredColor?: string | number
     /** CSS Classname applied to the HTML annotations */
     annotationsClass?: string
     /** Drag start event */
@@ -107,50 +59,12 @@ type PivotControlsProps = {
     onDrag?: (local: Matrix4, deltaL: Matrix4, world: Matrix4, deltaW: Matrix4) => void
     /** Drag end event */
     onDragEnd?: () => void
-    /** Set this to false if you want the gizmo to be visible through faces */
-    depthTest?: boolean
     displayValues?: boolean
-    opacity?: number
-    visible?: boolean
     userData?: { [key: string]: any }
-    printConfig?: boolean
-    children?: React.ReactNode
+    children?: ReactNode
 }
 
-const printState = (config: any) => {
-
-    console.info('============================')
-    console.info(config)
-
-    console.info('')
-
-    console.info('mL0', mL0)
-    console.info('mW0', mW0)
-    console.info('mP', mP)
-    console.info('mPInv', mPInv)
-    console.info('mW', mW)
-    console.info('mL', mL)
-    console.info('mL0Inv', mL0Inv)
-    console.info('mdL', mdL)
-
-    console.info('')
-
-    console.info('bb', bb)
-    console.info('bbObj', bbObj)
-    console.info('vCenter', vCenter)
-    console.info('vSize', vSize)
-    console.info('vAnchorOffset', vAnchorOffset)
-    console.info('vPosition', vPosition)
-
-    console.info('')
-
-    console.info('xDir', xDir)
-    console.info('yDir', yDir)
-    console.info('zDir', zDir)
-
-}
-
-export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
+export const Controls = forwardRef<Group, ControlsProps>(
     (
         {
             object,
@@ -160,27 +74,16 @@ export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
             onDragEnd,
             autoTransform = true,
             anchor,
-            disableScaling = false,
             disableAxes = false,
-            disableSliders = false,
             disableRotations = false,
             activeAxes = [true, true, true],
-            offset = [0, 0, 0],
             rotation = [0, 0, 0],
             scale = 1,
-            lineWidth = 4,
-            fixed = false,
             translationLimits,
             rotationLimits,
-            depthTest = true,
-            axisColors = ['#ff2060', '#20df80', '#2080ff'],
-            hoveredColor = '#ffff40',
             displayValues = true,
             annotationsClass,
-            opacity = 1,
-            visible = true,
             userData,
-            printConfig = false,
             children
         },
         fRef
@@ -216,23 +119,10 @@ export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
                     }
                 }
             }
-        }, [object])
-
-        /**
-         * Martijn
-         * This was a useLayoutEffect which we  like to avoid for performance reasons.
-         * Is there a reason it has to run before the browser repaints the screen?
-         * Changed to useEffect and seems to be fine
-         */
-        useEffect(() => {
 
             if (anchor) {
 
-                console.info('anchor', anchor)
-
                 const target = resolveObject(object, childrenRef.current)
-
-                console.info('target', target)
 
                 if (target) {
                     target.updateWorldMatrix(true, true)
@@ -252,12 +142,13 @@ export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
                         .copy(vSize)
                         .multiply(new Vector3(...anchor))
                         .add(vCenter)
-                    vPosition.set(...offset).add(vAnchorOffset)
+                    vPosition.set(0, 0, 0).add(vAnchorOffset)
                     gizmoRef.current.position.copy(vPosition)
                     invalidate()
                 }
             }
-        }, [anchor, invalidate, object, offset])
+
+        }, [object, anchor, invalidate])
 
         const config = useMemo(() => ({
 
@@ -288,21 +179,9 @@ export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
                         rotation = new Quaternion(),
                         scale = new Vector3();
 
-                    mdW.decompose(translation, rotation, scale);
-
-                    // the user data holds the name of the node
-                    console.info(userData)
-                    //console.info('translation', translation)
-                    //console.info('rotation', rotation)
-                    //console.info('scale', scale)
-
-                    //console.info('matrixWorld', parentRef.current.matrixWorld)
-
-                    console.info('mP', mP)
-
+                    mdW.decompose(translation, rotation, scale)
                     mP.copy(parentRef.current.matrixWorld)
                     mPInv.copy(mP).invert()
-
 
                     // After applying the delta
                     mW.copy(mW0).premultiply(mdW)
@@ -337,14 +216,8 @@ export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
                 translation,
                 translationLimits,
                 rotationLimits,
-                axisColors,
-                hoveredColor,
-                opacity,
                 scale,
-                lineWidth,
-                fixed,
                 displayValues,
-                depthTest,
                 userData,
                 annotationsClass,
                 object
@@ -358,13 +231,7 @@ export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
                 invalidate,
                 translationLimits,
                 rotationLimits,
-                depthTest,
                 scale,
-                lineWidth,
-                fixed,
-                axisColors,
-                hoveredColor,
-                opacity,
                 displayValues,
                 userData,
                 autoTransform,
@@ -372,26 +239,11 @@ export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
             ]
         )
 
-        const vec = new Vector3()
-
-        useFrame((state) => {
-
-            if (fixed) {
-
-                const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), scale, state.camera, state.size)
-
-                if (gizmoRef.current) {
-                    if (gizmoRef.current?.scale.x !== sf || gizmoRef.current?.scale.y !== sf || gizmoRef.current?.scale.z !== sf) {
-                        gizmoRef.current.scale.setScalar(sf)
-                        state.invalidate()
-                    }
-                }
-            }
-        })
-
         useImperativeHandle(fRef, () => ref.current, [])
 
-        if (printConfig) printState(config)
+        const xDir = new Vector3(1, 0, 0)
+        const yDir = new Vector3(0, 1, 0)
+        const zDir = new Vector3(0, 0, 1)
 
         return (
             <context.Provider value={config}>
@@ -400,18 +252,18 @@ export const PivotControls = React.forwardRef<Group, PivotControlsProps>(
 
                     <group ref={ref} matrix={matrix} matrixAutoUpdate={false}>
 
-                        <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
+                        <group ref={gizmoRef} position={[0, 0, 0]} rotation={rotation}>
 
-                            {!disableAxes && activeAxes[0] && <AxisArrow axis={0} direction={xDir}/>}
-                            {!disableAxes && activeAxes[1] && <AxisArrow axis={1} direction={yDir}/>}
-                            {!disableAxes && activeAxes[2] && <AxisArrow axis={2} direction={zDir}/>}
+                            {!disableAxes && activeAxes[0] && <Translate axis={0} direction={xDir}/>}
+                            {!disableAxes && activeAxes[1] && <Translate axis={1} direction={yDir}/>}
+                            {!disableAxes && activeAxes[2] && <Translate axis={2} direction={zDir}/>}
 
                             {!disableRotations && activeAxes[0] && activeAxes[1] &&
-                              <AxisRotator axis={2} dir1={xDir} dir2={yDir}/>}
+                              <Rotate axis={2} dir1={xDir} dir2={yDir}/>}
                             {!disableRotations && activeAxes[0] && activeAxes[2] &&
-                              <AxisRotator axis={1} dir1={zDir} dir2={xDir}/>}
+                              <Rotate axis={1} dir1={zDir} dir2={xDir}/>}
                             {!disableRotations && activeAxes[2] && activeAxes[1] &&
-                              <AxisRotator axis={0} dir1={yDir} dir2={zDir}/>}
+                              <Rotate axis={0} dir1={yDir} dir2={zDir}/>}
 
                         </group>
                         <group ref={childrenRef}>{children}</group>

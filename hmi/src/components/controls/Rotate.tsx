@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2024 - Martijn Benjamin
+ *
+ * -----
+ * Written for the Monumental technical assessment
+ * "Visualizing a Robotic Crane"
+ * -----
+ */
 import React, {useContext, useRef, useState, useCallback, useMemo, FC} from 'react'
 import {ThreeEvent, useThree} from '@react-three/fiber'
 import {Line, Html} from '@react-three/drei'
@@ -57,22 +65,16 @@ const posNew = new Vector3()
 const ray = new Ray()
 const intersection = new Vector3()
 
-export const AxisRotator: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
-                                                                                       dir1,
-                                                                                       dir2,
-                                                                                       axis
-                                                                                   }) => {
+export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
+                                                                                  dir1,
+                                                                                  dir2,
+                                                                                  axis
+                                                                              }) => {
     const {
         rotationLimits,
         annotationsClass,
-        depthTest,
         scale,
-        lineWidth,
-        fixed,
-        axisColors,
-        hoveredColor,
         displayValues,
-        opacity,
         onDragStart,
         onDrag,
         onDragEnd,
@@ -190,7 +192,7 @@ export const AxisRotator: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> 
         return new Matrix4().makeBasis(dir1N, dir2N, dir1N.clone().cross(dir2N))
     }, [dir1, dir2])
 
-    const r = fixed ? 0.65 : scale * 0.65
+    const r = scale * 0.65
 
     const arc = useMemo(() => {
         const segments = 32
@@ -201,6 +203,8 @@ export const AxisRotator: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> 
         }
         return points
     }, [r])
+
+    const axisColors = ['#ff2060', '#20df80', '#2080ff']
 
     return (
         <group
@@ -215,7 +219,8 @@ export const AxisRotator: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> 
                 <div
                     style={{
                         display: 'none',
-                        background: '#151520',
+                        fontFamily: 'monospace',
+                        background: '#F84823',
                         color: 'white',
                         padding: '6px 8px',
                         borderRadius: 7,
@@ -226,16 +231,14 @@ export const AxisRotator: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> 
                 />
             </Html>
             {/* The invisible mesh being raycast */}
-            <Line points={arc} lineWidth={lineWidth * 4} visible={false} userData={userData}/>
+            <Line points={arc} lineWidth={8} visible={false} userData={userData}/>
             {/* The visible mesh */}
             <Line
                 transparent
                 raycast={() => null}
-                depthTest={depthTest}
                 points={arc}
-                lineWidth={lineWidth}
-                color={(isHovered ? hoveredColor : axisColors[axis]) as any}
-                opacity={opacity}
+                lineWidth={2}
+                color={(isHovered ? '#ffff40' : axisColors[axis]) as any}
                 polygonOffset
                 polygonOffsetFactor={-10}
             />
