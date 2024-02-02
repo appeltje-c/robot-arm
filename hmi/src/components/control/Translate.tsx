@@ -27,94 +27,147 @@ export const calculateOffset = (clickPoint: Vector3, normal: Vector3, rayStart: 
     return -vec1.dot(vec2) / vec1.dot(vec1)
 }
 
-const upV = new Vector3(0, 1, 0)
-const offsetMatrix = new Matrix4()
-
+/**
+ *
+ *
+ * @param direction
+ * @param axis
+ */
 export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
 
     const {
         translation,
         translationLimits,
-        annotationsClass,
         scale,
-        displayValues,
         onDragStart,
         onDrag,
         onDragEnd,
         userData
     } = useContext(context)
 
-    // @ts-expect-error new in @react-three/fiber@7.0.5
-    const camControls = useThree((state) => state.controls) as { enabled: boolean }
-    const divRef = useRef<HTMLDivElement>(null!)
-    const objRef = useRef<Group>(null!)
+    // get a handle on the cam controls to enable/disable while operating the gizmo
+    const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean }
+
+    // the label showing the translated value
+    const translationLabel = useRef<HTMLDivElement>(null!)
+
+    //
+    const gizmoGroup = useRef<Group>(null!)
     const clickInfo = useRef<{ clickPoint: Vector3; dir: Vector3 } | null>(null)
     const offset0 = useRef<number>(0)
     const [isHovered, setIsHovered] = useState(false)
 
-    const onPointerDown = useCallback(
-        (e: ThreeEvent<PointerEvent>) => {
-            if (displayValues) {
-                divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
-                divRef.current.style.display = 'block'
-            }
-            e.stopPropagation()
-            const rotation = new Matrix4().extractRotation(objRef.current.matrixWorld)
-            const clickPoint = e.point.clone()
-            const origin = new Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
+    /**
+     * On Mouse click we prepare to start dragging
+     *
+     * 1. show the current translation value
+     * 2. stop event propagation
+     * 3.
+     */
+    const onPointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
+
+            // update label with current translation value for this axis and show it
+            translationLabel.current.innerText = `${translation.current[axis].toFixed(2)}`
+            translationLabel.current.style.display = 'block'
+
+            // stopPropagation will stop underlying handlers from firing
+            event.stopPropagation()
+
+            // get the xyz vector for the mouse click
+            const clickPoint = event.point.clone()
+
+            const rotation = new Matrix4().extractRotation(gizmoGroup.current.matrixWorld)
+            const origin = new Vector3().setFromMatrixPosition(gizmoGroup.current.matrixWorld)
             const dir = direction.clone().applyMatrix4(rotation).normalize()
+
+            // set the click
             clickInfo.current = {clickPoint, dir}
             offset0.current = translation.current[axis]
-            onDragStart({component: 'Arrow', axis, origin, directions: [dir]})
+
+            // invoke drag start for translation action
+            onDragStart({action: 'Translate', axis, origin, directions: [dir]})
+
             camControls && (camControls.enabled = false)
+
             // @ts-ignore - setPointerCapture is not in the type definition
-            e.target.setPointerCapture(e.pointerId)
-        },
-        [direction, camControls, onDragStart, translation, axis, displayValues]
+            event.target.setPointerCapture(event.pointerId)
+
+        }, [direction, camControls, onDragStart, translation, axis]
     )
 
-    const onPointerMove = useCallback(
-        (e: ThreeEvent<PointerEvent>) => {
-            e.stopPropagation()
+    /**
+     * Mouse moving
+     */
+    const onPointerMove = useCallback((event: ThreeEvent<PointerEvent>) => {
+
+            // stopPropagation will stop underlying handlers from firing
+            event.stopPropagation()
+
             if (!isHovered) setIsHovered(true)
+
             if (clickInfo.current) {
+
                 const {clickPoint, dir} = clickInfo.current
+
+                /**
+                 * Check if we are still within translation limits
+                 */
                 const [min, max] = translationLimits?.[axis] || [undefined, undefined]
-                let offset = calculateOffset(clickPoint, dir, e.ray.origin, e.ray.direction)
+                let offset = calculateOffset(clickPoint, dir, event.ray.origin, event.ray.direction)
                 if (min !== undefined) offset = Math.max(offset, min - offset0.current)
                 if (max !== undefined) offset = Math.min(offset, max - offset0.current)
+
+                // set the current translation
                 translation.current[axis] = offset0.current + offset
-                if (displayValues) divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
+
+                // update label with translation value
+                translationLabel.current.innerText = `${translation.current[axis].toFixed(2)}`
+
+                // create and calculate the offset matrix for the on drag method
+                const offsetMatrix = new Matrix4()
+
                 offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
+
+                // invoke the onDrag method with the calculated offset matrix
                 onDrag(offsetMatrix)
             }
-        },
-        [onDrag, isHovered, translation, translationLimits, axis, displayValues]
+
+        }, [onDrag, isHovered, translation, translationLimits, axis]
     )
 
-    const onPointerUp = useCallback(
-        (e: ThreeEvent<PointerEvent>) => {
-            if (displayValues) divRef.current.style.display = 'none'
-            e.stopPropagation()
+    /**
+     * Mouse up
+     */
+    const onPointerUp = useCallback((event: ThreeEvent<PointerEvent>) => {
+
+            // hide label
+            translationLabel.current.style.display = 'none'
+
+            event.stopPropagation()
             clickInfo.current = null
             onDragEnd()
             camControls && (camControls.enabled = true)
+
             // @ts-ignore - releasePointerCapture & PointerEvent#pointerId is not in the type definition
-            e.target.releasePointerCapture(e.pointerId)
-        },
-        [camControls, onDragEnd, displayValues]
+            event.target.releasePointerCapture(event.pointerId)
+
+        }, [camControls, onDragEnd]
     )
 
-    const onPointerOut = useCallback((e: ThreeEvent<PointerEvent>) => {
-        e.stopPropagation()
+    /**
+     * Mouse out
+     */
+    const onPointerOut = useCallback((event: ThreeEvent<PointerEvent>) => {
+        event.stopPropagation()
         setIsHovered(false)
     }, [])
 
+    // calculate properties for the translation arrow mesh
     const {cylinderLength, coneWidth, coneLength, matrixL} = useMemo(() => {
         const coneWidth = scale / 20
         const coneLength = scale / 5
         const cylinderLength = scale - coneLength
-        const quaternion = new Quaternion().setFromUnitVectors(upV, direction.clone().normalize())
+        const quaternion = new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), direction.clone().normalize())
         const matrixL = new Matrix4().makeRotationFromQuaternion(quaternion)
         return {cylinderLength, coneWidth, coneLength, matrixL}
     }, [direction, scale])
@@ -123,7 +176,8 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
     const color_ = isHovered ? '#ffff40' : axisColors[axis]
 
     return (
-        <group ref={objRef}>
+        <group ref={gizmoGroup}>
+
             <group
                 matrix={matrixL}
                 matrixAutoUpdate={false}
@@ -131,6 +185,7 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
                 onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp}
                 onPointerOut={onPointerOut}>
+
                 <Html position={[0, -coneLength, 0]}>
                     <div
                         style={{
@@ -142,30 +197,29 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
                             borderRadius: 7,
                             whiteSpace: 'nowrap'
                         }}
-                        className={annotationsClass}
-                        ref={divRef}
+                        ref={translationLabel}
                     />
                 </Html>
+
                 {/* The invisible mesh being raycast */}
                 <mesh visible={false} position={[0, (cylinderLength + coneLength) / 2.0, 0]} userData={userData}>
                     <cylinderGeometry args={[coneWidth * 1.4, coneWidth * 1.4, cylinderLength + coneLength, 8, 1]}/>
                 </mesh>
+
                 {/* The visible mesh */}
-                <Line
-                    transparent
-                    raycast={() => null}
-                    points={[0, 0, 0, 0, cylinderLength, 0] as any}
-                    lineWidth={2}
-                    color={color_ as any}
-                    polygonOffset
-                    renderOrder={1}
-                    polygonOffsetFactor={-10}/>
+                <Line transparent
+                      raycast={() => null}
+                      points={[0, 0, 0, 0, cylinderLength, 0] as any}
+                      lineWidth={2}
+                      color={color_ as any}
+                      polygonOffset
+                      renderOrder={1}
+                      polygonOffsetFactor={-10}/>
                 <mesh raycast={() => null} position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={500}>
                     <coneGeometry args={[coneWidth, coneLength, 24, 1]}/>
-                    <meshBasicMaterial transparent={true} color={color_}
-                                       polygonOffset
-                                       polygonOffsetFactor={-10}/>
+                    <meshBasicMaterial transparent={true} color={color_}/>
                 </mesh>
+
             </group>
         </group>
     )

@@ -70,11 +70,10 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
                                                                                   dir2,
                                                                                   axis
                                                                               }) => {
+    // get the config from context
     const {
         rotationLimits,
-        annotationsClass,
         scale,
-        displayValues,
         onDragStart,
         onDrag,
         onDragEnd,
@@ -83,7 +82,7 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
 
     // @ts-expect-error new in @react-three/fiber@7.0.5
     const camControls = useThree((state) => state.controls) as { enabled: boolean }
-    const divRef = useRef<HTMLDivElement>(null!)
+    const rotationLabel = useRef<HTMLDivElement>(null!)
     const objRef = useRef<Group>(null!)
     const angle0 = useRef<number>(0)
     const angle = useRef<number>(0)
@@ -99,10 +98,9 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
 
     const onPointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
 
-            if (displayValues) {
-                divRef.current.innerText = `${toDegrees(angle.current).toFixed(0)}º`
-                divRef.current.style.display = 'block'
-            }
+            // update label with rotation value
+            rotationLabel.current.innerText = `${toDegrees(angle.current).toFixed(0)}º`
+            rotationLabel.current.style.display = 'block'
 
             e.stopPropagation()
             const clickPoint = e.point.clone()
@@ -112,12 +110,16 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
             const normal = new Vector3().setFromMatrixColumn(objRef.current.matrixWorld, 2).normalize()
             const plane = new Plane().setFromNormalAndCoplanarPoint(normal, origin)
             clickInfo.current = {clickPoint, origin, e1, e2, normal, plane}
-            onDragStart({component: 'Rotator', axis, origin, directions: [e1, e2, normal]})
+
+
+            onDragStart({action: 'Rotate', axis, origin, directions: [e1, e2, normal]})
+
             camControls && (camControls.enabled = false)
+
             // @ts-ignore - setPointerCapture is not in the type definition
             e.target.setPointerCapture(e.pointerId)
         },
-        [camControls, onDragStart, axis, displayValues]
+        [camControls, onDragStart, axis]
     )
 
     const onPointerMove = useCallback(
@@ -150,24 +152,26 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
                     angle.current = angle.current > Math.PI ? angle.current - 2 * Math.PI : angle.current
                 }
 
-                if (displayValues) {
-                    degrees = toDegrees(angle.current)
-                    divRef.current.innerText = `${degrees.toFixed(0)}º`
-                }
+                // update label values
+                degrees = toDegrees(angle.current)
+                rotationLabel.current.innerText = `${degrees.toFixed(0)}º`
+
                 rotMatrix.makeRotationAxis(normal, deltaAngle)
                 posNew.copy(origin).applyMatrix4(rotMatrix).sub(origin).negate()
                 rotMatrix.setPosition(posNew)
                 onDrag(rotMatrix)
             }
         },
-        [onDrag, isHovered, rotationLimits, axis, displayValues]
+        [onDrag, isHovered, rotationLimits, axis]
     )
 
+    /**
+     * Action stopped
+     */
     const onPointerUp = useCallback((e: ThreeEvent<PointerEvent>) => {
 
-            if (displayValues) {
-                divRef.current.style.display = 'none'
-            }
+            // hide label
+            rotationLabel.current.style.display = 'none'
 
             e.stopPropagation()
             angle0.current = angle.current
@@ -178,7 +182,7 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
             // @ts-ignore - setPointerCapture is not in the type definition
             e.target.releasePointerCapture(e.pointerId)
         },
-        [camControls, onDragEnd, displayValues]
+        [camControls, onDragEnd]
     )
 
     const onPointerOut = useCallback((e: any) => {
@@ -226,8 +230,7 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
                         borderRadius: 7,
                         whiteSpace: 'nowrap'
                     }}
-                    className={annotationsClass}
-                    ref={divRef}
+                    ref={rotationLabel}
                 />
             </Html>
             {/* The invisible mesh being raycast */}
@@ -238,7 +241,7 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
                 raycast={() => null}
                 points={arc}
                 lineWidth={2}
-                color={(isHovered ? '#ffff40' : axisColors[axis]) as any}
+                color={(isHovered ? '#ffff40' : axisColors[axis])}
                 polygonOffset
                 polygonOffsetFactor={-10}
             />

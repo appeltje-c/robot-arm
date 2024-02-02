@@ -15,6 +15,10 @@ check:
 Bonus: add inverse kinematics based on gripper relocation
 
 
+learn more
+https://sbcode.net/react-three-fiber/object3d-hierarchy/
+
+
 https://github.com/pmndrs/gltfjsx
 
 CCDIKResolver

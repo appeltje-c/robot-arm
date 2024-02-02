@@ -7,7 +7,7 @@
  * -----
  */
 import React from 'react'
-import {Controls} from '@components/controls'
+import {Control} from 'src/components/control'
 import {useGLTF} from '@react-three/drei'
 import {Monumental} from '@types'
 
@@ -29,47 +29,37 @@ export const Crane = ({data}: CraneProps) => {
     const CraneNode = Monumental.CraneNode
 
     return (
+        // A group is almost identical to an object3D. Its purpose is to make working with groups of objects
+        // syntactically clearer.
         <group>
 
-            {/** */}
-            <Controls
-                disableAxes
-                // we constrain the rotation of the main column over x and z
+            <Control
                 activeAxes={[true, false, true]}
-                anchor={[-0.721, -1, -0]}
                 scale={5}
                 userData={[CraneNode.mainColumn]}>
 
-                {/* main column mesh */}
                 <mesh geometry={nodes[CraneNode.mainColumn].geometry}
                       material={nodes[CraneNode.mainColumn].material}
-                      position={data[CraneNode.mainColumn].position}>
-                    <meshStandardMaterial color="white"/>
-                </mesh>
+                      position={data[CraneNode.mainColumn].position}/>
 
-                {/* Translation control for the main column */}
-                <Controls activeAxes={[false, true, false]} // y-axis only
-                          translationLimits={[undefined, [-1, 1.8], undefined]} // don't go of the rail
-                          disableRotations
-                          anchor={[-0.8, 0.5, 0]}
-                          scale={1}
-                          userData={[CraneNode.upperArm]}>
+                <Control activeAxes={[false, true, false]}
+                         translationLimits={[undefined, [-1, 1.8], undefined]}
+                         disableRotation
+                         anchor={[-0.8, 0.5, 0]}
+                         scale={1}
+                         userData={[CraneNode.upperArm]}>
 
                     <mesh geometry={nodes[CraneNode.upperArm].geometry}
                           material={nodes[CraneNode.upperArm].material}
                           position={data[CraneNode.upperArm].position}
                           scale={[0.684, 1, 1]}/>
 
-                    {/** Rotation control for the elbow*/}
-                    <Controls
-                        // we constrain the rotation of the elbow over x and z
-                        activeAxes={[true, false, true]}
-                        // limit the rotation reach so we don't bump into ourselves
-                        rotationLimits={[undefined, [-2, 2], undefined]}
-                        disableAxes
-                        anchor={[-0.889, 1, -0.4]}
-                        scale={2}
-                        userData={[CraneNode.elbow]}>
+                    <Control activeAxes={[true, false, true]}
+                             rotationLimits={[undefined, [-2, 2], undefined]}
+                             disableTranslation
+                             anchor={[-0.889, 1, -0.4]}
+                             scale={2}
+                             userData={[CraneNode.elbow]}>
 
                         <mesh geometry={nodes[CraneNode.elbow].geometry}
                               material={nodes[CraneNode.elbow].material}
@@ -81,11 +71,10 @@ export const Crane = ({data}: CraneProps) => {
                               position={data[CraneNode.lowerArm].position}
                               scale={[0.684, 1, 1]}/>
 
-                        <Controls
-                            // we constrain the rotation of the elbow over x and z
+                        <Control
                             activeAxes={[true, false, true]}
                             rotationLimits={[undefined, [-2, 2], undefined]}
-                            disableAxes
+                            disableTranslation
                             anchor={[-0.75, 1, -0.4]}
                             scale={2}
                             userData={[CraneNode.wrist]}>
@@ -105,22 +94,22 @@ export const Crane = ({data}: CraneProps) => {
                                   position={data[CraneNode.hand].position}
                                   scale={[1, 0.068, 0.327]}/>
 
-                            <Controls activeAxes={[true, false, false]}
-                                      translationLimits={[[-0.5, 0.2], undefined, undefined]}
-                                      anchor={[0, 0, 0]}
-                                      scale={0.75}
-                                      userData={[CraneNode.gripper]}>
+                            <Control activeAxes={[true, false, false]}
+                                     translationLimits={[[-0.5, 0.2], undefined, undefined]}
+                                     anchor={[0, 0, 0]}
+                                     scale={0.75}
+                                     userData={[CraneNode.gripper]}>
 
                                 <mesh geometry={nodes[CraneNode.gripper].geometry}
                                       material={nodes[CraneNode.gripper].material}
                                       position={data[CraneNode.gripper].position}
                                       scale={[-0.01, -0.132, -0.325]}/>
 
-                            </Controls>
-                        </Controls>
-                    </Controls>
-                </Controls>
-            </Controls>
+                            </Control>
+                        </Control>
+                    </Control>
+                </Control>
+            </Control>
 
         </group>
     )
