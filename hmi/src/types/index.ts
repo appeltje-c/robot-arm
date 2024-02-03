@@ -18,7 +18,7 @@ import {Vector3, Mesh, MeshStandardMaterial, Matrix4} from 'three'
 export namespace Monumental {
 
     /**
-     *
+     * The Node names we expect on a Crane
      */
     export enum CraneNode {
         mainColumn = 'main_column',
@@ -31,6 +31,9 @@ export namespace Monumental {
         gripper = 'gripper'
     }
 
+    /**
+     * Crane Nodes expected in Crane data
+     */
     export interface CraneData {
         nodes: {
             [CraneNode.mainColumn]: { position: Vector3 },
@@ -44,13 +47,17 @@ export namespace Monumental {
         }
     }
 
+    /**
+     * Since useGLTF does not supply the nodes and materials types we define them ourselves.
+     * Seems like missing typing in drei.
+     */
     export type DreiGLTF = GLTF & {
         nodes: Record<string, Mesh>
         materials: Record<string, MeshStandardMaterial>
     }
 
     /**
-     *
+     * These are the properties we have on the Robot Control (Gizmo)
      */
     export type RobotControl = {
 
@@ -87,7 +94,7 @@ export namespace Monumental {
     }
 
     /**
-     *
+     * The start event invoking the RobotControl
      */
     export type ControlStart = {
         action: 'Translate' | 'Rotate'
@@ -97,7 +104,7 @@ export namespace Monumental {
     }
 
     /**
-     *
+     * RobotControl Context types
      */
     export type ControlContext = {
         onDragStart: (props: ControlStart) => void

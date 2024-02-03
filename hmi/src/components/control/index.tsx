@@ -151,6 +151,7 @@ export const Control = ((
                  */
                 onDragStart: (props: Monumental.ControlStart) => {
 
+                    // @todo learn about matrix operations
                     localMatrix0.copy(matrixGroup.current.matrix)
                     worldMatrix0.copy(matrixGroup.current.matrixWorld)
                     onDragStart && onDragStart(props)
@@ -163,6 +164,7 @@ export const Control = ((
                  */
                 onDrag: (worldDeltaMatrix: Matrix4) => {
 
+                    // @todo learn about matrix operations
                     parentMatrix.copy(parentGroup.current.matrixWorld)
                     parentMatrixInv.copy(parentMatrix).invert()
 
@@ -181,7 +183,7 @@ export const Control = ((
                 },
 
                 /**
-                 *
+                 * Mouse/pointer up
                  */
                 onDragEnd: () => {
                     if (onDragEnd) onDragEnd()

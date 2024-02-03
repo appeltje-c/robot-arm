@@ -12,10 +12,16 @@ import {Line, Html} from '@react-three/drei'
 import {context} from './context'
 import {Vector3, Matrix4, Group, Quaternion} from 'three'
 
-const vec1 = new Vector3()
-const vec2 = new Vector3()
+/**
+ * Helper method to calculate the offset when determining
+ * if we are still within translation limits
+ * @todo move to utils
+ */
+const calculateOffset = (clickPoint: Vector3, normal: Vector3, rayStart: Vector3, rayDir: Vector3) => {
 
-export const calculateOffset = (clickPoint: Vector3, normal: Vector3, rayStart: Vector3, rayDir: Vector3) => {
+    // @todo learn how this works
+    const vec1 = new Vector3()
+    const vec2 = new Vector3()
 
     const e1 = normal.dot(normal)
     const e2 = normal.dot(clickPoint) - normal.dot(rayStart)
@@ -36,13 +42,11 @@ export const calculateOffset = (clickPoint: Vector3, normal: Vector3, rayStart: 
 }
 
 /**
- *
- *
- * @param direction
- * @param axis
+ * Translate let's the user drag the gizmo and with it child objects over the configured axis/axes
  */
 export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
 
+    // get the config & event implementations from context
     const {
         translation,
         translationLimits,
@@ -59,18 +63,20 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
     // the label showing the translated value
     const translationLabel = useRef<HTMLDivElement>(null!)
 
-    //
+    // Object3D group for this Gizmo
     const gizmoGroup = useRef<Group>(null!)
+
+    // ref to keep info where the mouse/pointer click occurred
     const clickInfo = useRef<{ clickPoint: Vector3; dir: Vector3 } | null>(null)
+
+    // the offset calculated on start and used while moving
     const offset0 = useRef<number>(0)
+
+    // is the mouse hovering over the gizmo. we change the color when hovering over
     const [isHovered, setIsHovered] = useState(false)
 
     /**
-     * On Mouse click we prepare to start dragging
-     *
-     * 1. show the current translation value
-     * 2. stop event propagation
-     * 3.
+     * On pointer down (click) we prepare to start dragging
      */
     const onPointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
 
@@ -84,17 +90,19 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
             // get the xyz vector for the mouse click
             const clickPoint = event.point.clone()
 
+            // @todo learn what is going on here
             const rotation = new Matrix4().extractRotation(gizmoGroup.current.matrixWorld)
             const origin = new Vector3().setFromMatrixPosition(gizmoGroup.current.matrixWorld)
             const dir = direction.clone().applyMatrix4(rotation).normalize()
 
-            // set the click
+            // set the click info
             clickInfo.current = {clickPoint, dir}
             offset0.current = translation.current[axis]
 
             // invoke drag start for translation action
             onDragStart({action: 'Translate', axis, origin, directions: [dir]})
 
+            // disable the cam controls to avoid it fighting with the gizmo movements
             camControls && (camControls.enabled = false)
 
             // @ts-ignore - setPointerCapture is not in the type definition
@@ -104,7 +112,7 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
     )
 
     /**
-     * Mouse moving
+     * Mouse/pointer moving
      */
     const onPointerMove = useCallback((event: ThreeEvent<PointerEvent>) => {
 
@@ -133,7 +141,6 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
 
                 // create and calculate the offset matrix for the on drag method
                 const offsetMatrix = new Matrix4()
-
                 offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
 
                 // invoke the onDrag method with the calculated offset matrix
@@ -144,16 +151,23 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
     )
 
     /**
-     * Mouse up
+     * Pointer up ends the control interaction
      */
     const onPointerUp = useCallback((event: ThreeEvent<PointerEvent>) => {
 
             // hide label
             translationLabel.current.style.display = 'none'
 
+            // avoid handlers firing
             event.stopPropagation()
+
+            // reset click info
             clickInfo.current = null
+
+            // call the onDragEnd
             onDragEnd()
+
+            // give cam controls back
             camControls && (camControls.enabled = true)
 
             // @ts-ignore - releasePointerCapture & PointerEvent#pointerId is not in the type definition
@@ -163,14 +177,14 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
     )
 
     /**
-     * Mouse out
+     * In the pointer out we mark hovered as false
      */
     const onPointerOut = useCallback((event: ThreeEvent<PointerEvent>) => {
         event.stopPropagation()
         setIsHovered(false)
     }, [])
 
-    // calculate properties for the translation arrow mesh
+    // calculate properties for the translation arrow meshes
     const {cylinderLength, coneWidth, coneLength, matrixL} = useMemo(() => {
         const coneWidth = scale / 20
         const coneLength = scale / 5
@@ -180,12 +194,14 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
         return {cylinderLength, coneWidth, coneLength, matrixL}
     }, [direction, scale])
 
+    // colors of the axes and a hover color
     const axisColors = ['#ff2060', '#20df80', '#2080ff']
-    const color_ = isHovered ? '#ffff40' : axisColors[axis]
+    const color = isHovered ? '#ffff40' : axisColors[axis]
 
     return (
         <group ref={gizmoGroup}>
 
+            {/** group on which we set the gizmo event implementations */}
             <group
                 matrix={matrixL}
                 matrixAutoUpdate={false}
@@ -194,6 +210,7 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
                 onPointerUp={onPointerUp}
                 onPointerOut={onPointerOut}>
 
+                {/** the label showing the translation value */}
                 <Html position={[0, -coneLength, 0]}>
                     <div
                         style={{
@@ -209,7 +226,9 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
                     />
                 </Html>
 
-                {/* The invisible mesh being raycast */}
+                {/* The invisible mesh being raycast
+                    @todo learn how this works
+                 */}
                 <mesh visible={false} position={[0, (cylinderLength + coneLength) / 2.0, 0]} userData={userData}>
                     <cylinderGeometry args={[coneWidth * 1.4, coneWidth * 1.4, cylinderLength + coneLength, 8, 1]}/>
                 </mesh>
@@ -217,15 +236,15 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
                 {/* The visible mesh */}
                 <Line transparent
                       raycast={() => null}
-                      points={[0, 0, 0, 0, cylinderLength, 0] as any}
+                      points={[0, 0, 0, 0, cylinderLength, 0]}
                       lineWidth={2}
-                      color={color_ as any}
+                      color={color}
                       polygonOffset
                       renderOrder={1}
                       polygonOffsetFactor={-10}/>
                 <mesh raycast={() => null} position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={500}>
                     <coneGeometry args={[coneWidth, coneLength, 24, 1]}/>
-                    <meshBasicMaterial transparent={true} color={color_}/>
+                    <meshBasicMaterial transparent={true} color={color}/>
                 </mesh>
 
             </group>
