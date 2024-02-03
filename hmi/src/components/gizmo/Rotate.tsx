@@ -159,6 +159,7 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({
                 rotMatrix.makeRotationAxis(normal, deltaAngle)
                 posNew.copy(origin).applyMatrix4(rotMatrix).sub(origin).negate()
                 rotMatrix.setPosition(posNew)
+                // @ts-ignore
                 onDrag(rotMatrix)
             }
         },

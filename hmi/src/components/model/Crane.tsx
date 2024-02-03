@@ -7,7 +7,7 @@
  * -----
  */
 import React from 'react'
-import {Control} from 'src/components/control'
+import {Gizmo} from '@components/gizmo'
 import {useGLTF} from '@react-three/drei'
 import {Monumental} from '@types'
 
@@ -33,7 +33,7 @@ export const Crane = ({data}: CraneProps) => {
         // syntactically clearer.
         <group>
 
-            <Control
+            <Gizmo
                 activeAxes={[true, false, true]}
                 scale={5}
                 userData={[CraneNode.mainColumn]}>
@@ -42,24 +42,24 @@ export const Crane = ({data}: CraneProps) => {
                       material={nodes[CraneNode.mainColumn].material}
                       position={data.nodes[CraneNode.mainColumn].position}/>
 
-                <Control activeAxes={[false, true, false]}
-                         translationLimits={[undefined, [-1, 1.8], undefined]}
-                         disableRotation
-                         anchor={[-0.8, 0.5, 0]}
-                         scale={1}
-                         userData={[CraneNode.upperArm]}>
+                <Gizmo activeAxes={[false, true, false]}
+                       translationLimits={[undefined, [-1, 1.8], undefined]}
+                       disableRotation
+                       anchor={[-0.8, 0.5, 0]}
+                       scale={1}
+                       userData={[CraneNode.upperArm]}>
 
                     <mesh geometry={nodes[CraneNode.upperArm].geometry}
                           material={nodes[CraneNode.upperArm].material}
                           position={data.nodes[CraneNode.upperArm].position}
                           scale={[0.684, 1, 1]}/>
 
-                    <Control activeAxes={[true, false, true]}
-                             rotationLimits={[undefined, [-2, 2], undefined]}
-                             disableTranslation
-                             anchor={[-0.889, 1, -0.4]}
-                             scale={2}
-                             userData={[CraneNode.elbow]}>
+                    <Gizmo activeAxes={[true, false, true]}
+                           rotationLimits={[undefined, [-2, 2], undefined]}
+                           disableTranslation
+                           anchor={[-0.889, 1, -0.4]}
+                           scale={2}
+                           userData={[CraneNode.elbow]}>
 
                         <mesh geometry={nodes[CraneNode.elbow].geometry}
                               material={nodes[CraneNode.elbow].material}
@@ -71,7 +71,7 @@ export const Crane = ({data}: CraneProps) => {
                               position={data.nodes[CraneNode.lowerArm].position}
                               scale={[0.684, 1, 1]}/>
 
-                        <Control
+                        <Gizmo
                             activeAxes={[true, false, true]}
                             rotationLimits={[undefined, [-2, 2], undefined]}
                             disableTranslation
@@ -94,22 +94,22 @@ export const Crane = ({data}: CraneProps) => {
                                   position={data.nodes[CraneNode.hand].position}
                                   scale={[1, 0.068, 0.327]}/>
 
-                            <Control activeAxes={[true, false, false]}
-                                     translationLimits={[[-0.5, 0.2], undefined, undefined]}
-                                     anchor={[0, 0, 0]}
-                                     scale={0.75}
-                                     userData={[CraneNode.gripper]}>
+                            <Gizmo activeAxes={[true, false, false]}
+                                   translationLimits={[[-0.5, 0.2], undefined, undefined]}
+                                   anchor={[0, 0, 0]}
+                                   scale={0.75}
+                                   userData={[CraneNode.gripper]}>
 
                                 <mesh geometry={nodes[CraneNode.gripper].geometry}
                                       material={nodes[CraneNode.gripper].material}
                                       position={data.nodes[CraneNode.gripper].position}
                                       scale={[-0.01, -0.132, -0.325]}/>
 
-                            </Control>
-                        </Control>
-                    </Control>
-                </Control>
-            </Control>
+                            </Gizmo>
+                        </Gizmo>
+                    </Gizmo>
+                </Gizmo>
+            </Gizmo>
 
         </group>
     )

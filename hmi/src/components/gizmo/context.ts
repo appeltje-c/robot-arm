@@ -9,4 +9,4 @@
 import {createContext} from 'react'
 import {Monumental} from '@types'
 
-export const context = createContext<Monumental.ControlContext>(null!)
+export const context = createContext<Monumental.GizmoState>(null!)

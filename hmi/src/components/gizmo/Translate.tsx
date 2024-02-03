@@ -144,6 +144,7 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
                 offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
 
                 // invoke the onDrag method with the calculated offset matrix
+                // @ts-ignore
                 onDrag(offsetMatrix)
             }
 

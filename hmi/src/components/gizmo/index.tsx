@@ -29,13 +29,13 @@ const parentMatrix = new Matrix4()
 const parentMatrixInv = new Matrix4()
 
 /**
- * The Control component accepts a configuration and the children (meshes) to control.
+ * The Gizmo component accepts a configuration and the children (meshes) to control.
  *
  * Both Translate as Rotate is handled. The type of operation is depending on the
  * configuration of activeAxis, disableTranslation and disableRotation. Mixing operations
  * is supported. e.g. a gizmo to rotate and translate with.
  */
-export const Control = ((
+export const Gizmo = ((
         {
             scale = 1,
             matrix,
@@ -50,7 +50,7 @@ export const Control = ((
             onDragEnd,
             userData,
             children
-        }: Monumental.RobotControl) => {
+        }: Monumental.RobotGizmo) => {
 
         // A handle to the underlying canvas invalidation method.
         // [useThree] Accesses R3F's internal state (WebGL), containing renderer, canvas, scene, etc.
@@ -149,7 +149,7 @@ export const Control = ((
                  * onDragStart is invoked by the group onPointerDown with the information on
                  * what operation (Translate/Rotate) which axis, origin and direction array
                  */
-                onDragStart: (props: Monumental.ControlStart) => {
+                onDragStart: (props: Monumental.GizmoStart) => {
 
                     // @todo learn about matrix operations
                     localMatrix0.copy(matrixGroup.current.matrix)

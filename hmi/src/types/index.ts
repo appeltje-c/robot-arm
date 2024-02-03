@@ -6,7 +6,7 @@
  * "Visualizing a Robotic Crane"
  * -----
  */
-import {ReactNode} from 'react'
+import {ReactNode, MutableRefObject} from 'react'
 import {GLTF} from 'three/examples/jsm/loaders/GLTFLoader'
 import {Vector3, Mesh, MeshStandardMaterial, Matrix4} from 'three'
 
@@ -57,9 +57,9 @@ export namespace Monumental {
     }
 
     /**
-     * These are the properties we have on the Robot Control (Gizmo)
+     * These are the properties we receive for the Robot Gizmo
      */
-    export type RobotControl = {
+    export type RobotGizmo = {
 
         // gizmo scale
         scale?: number
@@ -84,7 +84,7 @@ export namespace Monumental {
         rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
 
         // drag events
-        onDragStart?: (props: ControlStart) => void
+        onDragStart?: (props: GizmoStart) => void
         onDrag?: (local: Matrix4, deltaLocal: Matrix4, world: Matrix4, deltaWorld: Matrix4) => void
         onDragEnd?: () => void
 
@@ -94,26 +94,26 @@ export namespace Monumental {
     }
 
     /**
-     * The start event invoking the RobotControl
+     * The state we hold for a Gizmo
      */
-    export type ControlStart = {
-        action: 'Translate' | 'Rotate'
-        axis: 0 | 1 | 2
-        origin: Vector3
-        directions: Vector3[]
-    }
-
-    /**
-     * RobotControl Context types
-     */
-    export type ControlContext = {
-        onDragStart: (props: ControlStart) => void
-        onDrag: (mdW: Matrix4) => void
+    export type GizmoState = {
+        onDragStart: (props: GizmoStart) => void
+        onDrag: (local: Matrix4, deltaLocal: Matrix4, world: Matrix4, deltaWorld: Matrix4) => void
         onDragEnd: () => void
-        translation: { current: [number, number, number] }
+        translation: MutableRefObject<[number, number, number]>
         translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
         rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
         scale: number
         userData?: { [key: string]: any }
+    }
+
+    /**
+     * The start event when Gizmo is invoked
+     */
+    export type GizmoStart = {
+        action: 'Translate' | 'Rotate'
+        axis: 0 | 1 | 2
+        origin: Vector3
+        directions: Vector3[]
     }
 }
