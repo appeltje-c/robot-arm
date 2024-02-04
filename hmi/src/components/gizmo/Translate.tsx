@@ -11,42 +11,14 @@ import {ThreeEvent, useThree} from '@react-three/fiber'
 import {Line, Html} from '@react-three/drei'
 import {context} from './context'
 import {Vector3, Matrix4, Group, Quaternion} from 'three'
+import {calculateOffset} from '@utils'
 
 /**
- * Helper method to calculate the offset when determining
- * if we are still within translation limits
- * @todo move to utils
- */
-const calculateOffset = (clickPoint: Vector3, normal: Vector3, rayStart: Vector3, rayDir: Vector3) => {
-
-    // @todo learn how this works
-    const vec1 = new Vector3()
-    const vec2 = new Vector3()
-
-    const e1 = normal.dot(normal)
-    const e2 = normal.dot(clickPoint) - normal.dot(rayStart)
-    const e3 = normal.dot(rayDir)
-
-    if (e3 === 0) return -e2 / e1
-
-    vec1.copy(rayDir)
-        .multiplyScalar(e1 / e3)
-        .sub(normal)
-
-    vec2.copy(rayDir)
-        .multiplyScalar(e2 / e3)
-        .add(rayStart)
-        .sub(clickPoint)
-
-    return -vec1.dot(vec2) / vec1.dot(vec1)
-}
-
-/**
- * Translate let's the user drag the gizmo and with it child objects over the configured axis/axes
+ * Translate lets the user drag the gizmo and, with it, the child objects over the configured translation axis/axes
  */
 export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
 
-    // get the config & event implementations from context
+    // get the gizmo config & event implementations from context
     const {
         translation,
         translationLimits,
@@ -99,7 +71,7 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
             clickInfo.current = {clickPoint, dir}
             offset0.current = translation.current[axis]
 
-            // invoke drag start for translation action
+            // invoke drag start for translation operation
             onDragStart({action: 'Translate', axis, origin, directions: [dir]})
 
             // disable the cam controls to avoid it fighting with the gizmo movements
@@ -152,7 +124,7 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
     )
 
     /**
-     * Pointer up ends the control interaction
+     * Pointer up ends the gizmo interaction
      */
     const onPointerUp = useCallback((event: ThreeEvent<PointerEvent>) => {
 
@@ -181,18 +153,19 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
      * In the pointer out we mark hovered as false
      */
     const onPointerOut = useCallback((event: ThreeEvent<PointerEvent>) => {
+        // avoid handlers firing
         event.stopPropagation()
         setIsHovered(false)
     }, [])
 
     // calculate properties for the translation arrow meshes
-    const {cylinderLength, coneWidth, coneLength, matrixL} = useMemo(() => {
+    const {cylinderLength, coneWidth, coneLength, matrix} = useMemo(() => {
         const coneWidth = scale / 20
         const coneLength = scale / 5
         const cylinderLength = scale - coneLength
         const quaternion = new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), direction.clone().normalize())
         const matrixL = new Matrix4().makeRotationFromQuaternion(quaternion)
-        return {cylinderLength, coneWidth, coneLength, matrixL}
+        return {cylinderLength, coneWidth, coneLength, matrix: matrixL}
     }, [direction, scale])
 
     // colors of the axes and a hover color
@@ -204,7 +177,7 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
 
             {/** group on which we set the gizmo event implementations */}
             <group
-                matrix={matrixL}
+                matrix={matrix}
                 matrixAutoUpdate={false}
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}

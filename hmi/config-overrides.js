@@ -12,7 +12,8 @@ module.exports = function override (config) {
   alias({
     '@components': 'src/components',
     '@styles': 'src/styles',
-    '@types': 'src/types'
+    '@types': 'src/types',
+    '@utils': 'src/utils'
   })(config)
 
   return config
