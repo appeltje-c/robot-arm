@@ -11,8 +11,8 @@ import {Canvas} from '@react-three/fiber'
 import {GizmoHelper, GizmoViewport, OrbitControls, Environment, Stats, PerspectiveCamera} from '@react-three/drei'
 import {Crane} from '@components/model'
 import {Shadows, Ground} from '@components/stage'
-import {Monumental} from '@types'
 import socketIOClient from 'socket.io-client'
+import {Monumental} from '@types'
 
 /**
  * The App component defines the hmi visible and control elements
@@ -22,7 +22,7 @@ import socketIOClient from 'socket.io-client'
 export default function App() {
 
     // keep the data for the crane in state
-    const [robotData, setRobotData] = useState<Monumental.CraneData>()
+    const [robotData, setRobotData] = useState<Monumental.CraneNodes>()
     const socket = socketIOClient('/')
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function App() {
         if (!robotData) socket.emit("state:get")
 
         // set received state changes in state
-        socket.on("state", (data: Monumental.CraneData) => {
+        socket.on("state", (data: Monumental.CraneNodes) => {
             setRobotData(data)
         })
 

@@ -10,9 +10,10 @@ import React from 'react'
 import {Gizmo} from '@components/gizmo'
 import {useGLTF} from '@react-three/drei'
 import {Monumental} from '@types'
+import Mesh from "@components/mesh/Mesh";
 
 interface CraneProps {
-    data: Monumental.CraneData
+    data: Monumental.CraneNodes
 }
 
 /**
@@ -24,86 +25,61 @@ interface CraneProps {
 export const Crane = ({data}: CraneProps) => {
 
     // load the crane model
-    // the nodes and materials are missing from the GLTF and extending does resolve, as unknown to avoid this
+    // the nodes and materials are missing from the GLTF typing
+    // and extending (DreiGLTF) does not resolve. Casting as unknown to avoid this
+    // @todo create/vote github issue with Drei
     const {nodes} = useGLTF('/crane.glb') as unknown as Monumental.DreiGLTF
-    const CraneNode = Monumental.CraneNode
+    const node = Monumental.CraneNodeName
 
     return (
         // A group is almost identical to an object3D. Its purpose is to make working with groups of objects
         // syntactically clearer.
         <group>
 
-            <Gizmo
-                activeAxes={[true, false, true]}
-                scale={5}
-                userData={[CraneNode.mainColumn]}>
+            {/* The rotating main column. Nesting is grouping those meshes and their gizmos together */}
+            <Gizmo scale={5}
+                   disableTranslation
+                   activeAxes={[true, false, true]}
+                   userData={[node.mainColumn]}>
+                <Mesh node={nodes[node.mainColumn]} data={data.nodes[node.mainColumn]}/>
 
-                <mesh geometry={nodes[CraneNode.mainColumn].geometry}
-                      material={nodes[CraneNode.mainColumn].material}
-                      position={data.nodes[CraneNode.mainColumn].position}/>
-
+                {/* The upper arm mesh moving up and down with limits */}
                 <Gizmo activeAxes={[false, true, false]}
                        translationLimits={[undefined, [-1, 1.8], undefined]}
                        disableRotation
                        anchor={[-0.8, 0.5, 0]}
                        scale={1}
-                       userData={[CraneNode.upperArm]}>
+                       userData={[node.upperArm]}>
+                    <Mesh node={nodes[node.upperArm]} data={data.nodes[node.upperArm]}/>
 
-                    <mesh geometry={nodes[CraneNode.upperArm].geometry}
-                          material={nodes[CraneNode.upperArm].material}
-                          position={data.nodes[CraneNode.upperArm].position}
-                          scale={[0.684, 1, 1]}/>
-
+                    {/** The rotating elbow and lower arm with 115º limit */}
                     <Gizmo activeAxes={[true, false, true]}
                            rotationLimits={[undefined, [-2, 2], undefined]}
                            disableTranslation
                            anchor={[-0.889, 1, -0.4]}
                            scale={2}
-                           userData={[CraneNode.elbow]}>
+                           userData={[node.elbow]}>
+                        <Mesh node={nodes[node.elbow]} data={data.nodes[node.elbow]}/>
+                        <Mesh node={nodes[node.lowerArm]} data={data.nodes[node.lowerArm]}/>
 
-                        <mesh geometry={nodes[CraneNode.elbow].geometry}
-                              material={nodes[CraneNode.elbow].material}
-                              position={data.nodes[CraneNode.elbow].position}
-                              scale={[0.345, 0.122, 0.345]}/>
+                        {/** The rotating wrist, extension and hand with 115º limit */}
+                        <Gizmo activeAxes={[true, false, true]}
+                               rotationLimits={[undefined, [-2, 2], undefined]}
+                               disableTranslation
+                               anchor={[-0.75, 1, -0.4]}
+                               scale={2}
+                               userData={[node.wrist]}>
+                            <Mesh node={nodes[node.wrist]} data={data.nodes[node.wrist]}/>
+                            <Mesh node={nodes[node.wristExtension]} data={data.nodes[node.wristExtension]}/>
+                            <Mesh node={nodes[node.hand]} data={data.nodes[node.hand]}/>
 
-                        <mesh geometry={nodes[CraneNode.lowerArm].geometry}
-                              material={nodes[CraneNode.lowerArm].material}
-                              position={data.nodes[CraneNode.lowerArm].position}
-                              scale={[0.684, 1, 1]}/>
-
-                        <Gizmo
-                            activeAxes={[true, false, true]}
-                            rotationLimits={[undefined, [-2, 2], undefined]}
-                            disableTranslation
-                            anchor={[-0.75, 1, -0.4]}
-                            scale={2}
-                            userData={[CraneNode.wrist]}>
-
-                            <mesh geometry={nodes[CraneNode.wrist].geometry}
-                                  material={nodes[CraneNode.wrist].material}
-                                  position={data.nodes[CraneNode.wrist].position}
-                                  scale={[0.345, 0.122, 0.345]}/>
-
-                            <mesh geometry={nodes[CraneNode.wristExtension].geometry}
-                                  material={nodes[CraneNode.wristExtension].material}
-                                  position={data.nodes[CraneNode.wristExtension].position}
-                                  scale={0.264}/>
-
-                            <mesh geometry={nodes[CraneNode.hand].geometry}
-                                  material={nodes[CraneNode.hand].material}
-                                  position={data.nodes[CraneNode.hand].position}
-                                  scale={[1, 0.068, 0.327]}/>
-
+                            {/** The gripper with open/closing limits */}
                             <Gizmo activeAxes={[true, false, false]}
                                    translationLimits={[[-0.5, 0.2], undefined, undefined]}
                                    anchor={[0, 0, 0]}
                                    scale={0.75}
-                                   userData={[CraneNode.gripper]}>
-
-                                <mesh geometry={nodes[CraneNode.gripper].geometry}
-                                      material={nodes[CraneNode.gripper].material}
-                                      position={data.nodes[CraneNode.gripper].position}
-                                      scale={[-0.01, -0.132, -0.325]}/>
+                                   userData={[node.gripper]}>
+                                <Mesh node={nodes[node.gripper]} data={data.nodes[node.gripper]}/>
 
                             </Gizmo>
                         </Gizmo>
@@ -115,4 +91,5 @@ export const Crane = ({data}: CraneProps) => {
     )
 }
 
+// preload for performance
 useGLTF.preload('/crane.glb')

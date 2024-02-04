@@ -20,7 +20,7 @@ export namespace Monumental {
     /**
      * The Node names we expect on a Crane
      */
-    export enum CraneNode {
+    export enum CraneNodeName {
         mainColumn = 'main_column',
         upperArm = 'upper_arm',
         elbow = 'elbow',
@@ -34,17 +34,25 @@ export namespace Monumental {
     /**
      * Crane Nodes expected in Crane data
      */
-    export interface CraneData {
+    export interface CraneNodes {
         nodes: {
-            [CraneNode.mainColumn]: { position: Vector3 },
-            [CraneNode.upperArm]: { position: Vector3 },
-            [CraneNode.elbow]: { position: Vector3 },
-            [CraneNode.lowerArm]: { position: Vector3 },
-            [CraneNode.wrist]: { position: Vector3 },
-            [CraneNode.wristExtension]: { position: Vector3 },
-            [CraneNode.hand]: { position: Vector3 },
-            [CraneNode.gripper]: { position: Vector3 }
+            [CraneNodeName.mainColumn]: CraneNode,
+            [CraneNodeName.upperArm]: CraneNode,
+            [CraneNodeName.elbow]: CraneNode,
+            [CraneNodeName.lowerArm]: CraneNode,
+            [CraneNodeName.wrist]: CraneNode,
+            [CraneNodeName.wristExtension]: CraneNode,
+            [CraneNodeName.hand]: CraneNode,
+            [CraneNodeName.gripper]: CraneNode
         }
+    }
+
+    /**
+     * Crane Node data
+     */
+    export interface CraneNode {
+        position: Vector3,
+        scale: Vector3
     }
 
     /**
@@ -57,9 +65,17 @@ export namespace Monumental {
     }
 
     /**
-     * These are the properties we receive for the Robot Gizmo
+     * With mesh and crane data we construct each Crane node
      */
-    export type RobotGizmo = {
+    export type MeshProperties = {
+        node: Mesh
+        data: CraneNode
+    }
+
+    /**
+     * Properties we receive for a Robot Gizmo
+     */
+    export type GizmoProperties = {
 
         // gizmo scale
         scale?: number

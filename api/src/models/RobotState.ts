@@ -8,7 +8,7 @@
  */
 import mongoose from "mongoose"
 
-enum RobotNode {
+enum CraneNodeName {
     mainColumn = 'main_column',
     upperArm = 'upper_arm',
     elbow = 'elbow',
@@ -19,45 +19,58 @@ enum RobotNode {
     gripper = 'gripper'
 }
 
+export interface CraneNode {
+    position: [number, number, number],
+    scale: [number, number, number]
+}
+
 export type RobotStateDocument = mongoose.Document & {
     nodes: {
-        [RobotNode.mainColumn]: { position: number[] }
-        [RobotNode.upperArm]: { position: number[] }
-        [RobotNode.elbow]: { position: number[] }
-        [RobotNode.lowerArm]: { position: number[] }
-        [RobotNode.wrist]: { position: number[] }
-        [RobotNode.wristExtension]: { position: number[] }
-        [RobotNode.hand]: { position: number[] }
-        [RobotNode.gripper]: { position: number[] }
+        [CraneNodeName.mainColumn]: CraneNode
+        [CraneNodeName.upperArm]: CraneNode
+        [CraneNodeName.elbow]: CraneNode
+        [CraneNodeName.lowerArm]: CraneNode
+        [CraneNodeName.wrist]: CraneNode
+        [CraneNodeName.wristExtension]: CraneNode
+        [CraneNodeName.hand]: CraneNode
+        [CraneNodeName.gripper]: CraneNode
     }
 }
 
 const robotStateSchema = new mongoose.Schema<RobotStateDocument>(
     {
         nodes: {
-            'main_column': {
-                position: Array<number>
+            [CraneNodeName.mainColumn]: {
+                position: Array<number>,
+                scale: Array<number>
             },
-            'upper_arm': {
-                position: Array<number>
+            [CraneNodeName.upperArm]: {
+                position: Array<number>,
+                scale: Array<number>
             },
-            'elbow': {
-                position: Array<number>
+            [CraneNodeName.elbow]: {
+                position: Array<number>,
+                scale: Array<number>
             },
-            'lower_arm': {
-                position: Array<number>
+            [CraneNodeName.lowerArm]: {
+                position: Array<number>,
+                scale: Array<number>
             },
-            'wrist': {
-                position: Array<number>
+            [CraneNodeName.wrist]: {
+                position: Array<number>,
+                scale: Array<number>
             },
-            'wrist_extension': {
-                position: Array<number>
+            [CraneNodeName.wristExtension]: {
+                position: Array<number>,
+                scale: Array<number>
             },
-            'hand': {
-                position: Array<number>
+            [CraneNodeName.hand]: {
+                position: Array<number>,
+                scale: Array<number>
             },
-            'gripper': {
-                position: Array<number>
+            [CraneNodeName.gripper]: {
+                position: Array<number>,
+                scale: Array<number>
             }
         }
     },

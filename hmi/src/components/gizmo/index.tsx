@@ -50,7 +50,7 @@ export const Gizmo = ((
             onDragEnd,
             userData,
             children
-        }: Monumental.RobotGizmo) => {
+        }: Monumental.GizmoProperties) => {
 
         // A handle to the underlying canvas invalidation method.
         // [useThree] Accesses R3F's internal state (WebGL), containing renderer, canvas, scene, etc.
@@ -134,7 +134,7 @@ export const Gizmo = ((
         }, [anchor, invalidate])
 
         /**
-         * The control configuration contains scale, limits and userdata for the gizmo
+         * The Gizmo configuration contains scale, limits and userdata for the gizmo
          * and holds the implementation for both Translate and Rotate matrix updates
          * based on the gizmo mouse pointer events.
          *
@@ -143,7 +143,7 @@ export const Gizmo = ((
          * With useMemo we only recalculate when the dependencies have changed since the last render, more specific in
          * this case when any of the onDragStart, onDrag, onDragEnd, translation dependencies change
          */
-        const controlConfiguration = useMemo(() => ({
+        const configuration = useMemo(() => ({
 
                 /**
                  * onDragStart is invoked by the group onPointerDown with the information on
@@ -205,7 +205,7 @@ export const Gizmo = ((
         const z = new Vector3(0, 0, 1)
 
         return (
-            <context.Provider value={controlConfiguration}>
+            <context.Provider value={configuration}>
 
                 <group ref={parentGroup}>
 

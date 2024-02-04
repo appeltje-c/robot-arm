@@ -1,0 +1,29 @@
+/*
+ * Copyright (C) 2024 - Martijn Benjamin
+ *
+ * -----
+ * Written for the Monumental technical assessment
+ * "Visualizing a Robotic Crane"
+ * -----
+ */
+import React from 'react'
+import {Monumental} from '@types'
+
+/**
+ * Defines a Mesh with material and location
+ *
+ * @param node The GLTF Mesh
+ * @param data The node 3d data
+ */
+const Mesh = ({node, data}: Monumental.MeshProperties) => {
+
+    return (
+        <mesh geometry={node.geometry}
+              material={node.material}
+              position={data.position}
+              scale={data.scale}
+        />
+    )
+}
+
+export default Mesh
