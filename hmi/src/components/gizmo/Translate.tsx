@@ -20,7 +20,6 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
 
     // get the gizmo config & event implementations from context
     const {
-        translation,
         translationLimits,
         scale,
         onDragStart,
@@ -46,6 +45,8 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
 
     // is the mouse hovering over the gizmo. we change the color when hovering over
     const [isHovered, setIsHovered] = useState(false)
+
+    const translation = useRef<[number, number, number]>([0, 0, 0])
 
     /**
      * On pointer down (click) we prepare to start dragging

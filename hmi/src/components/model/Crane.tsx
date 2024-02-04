@@ -36,7 +36,7 @@ export const Crane = ({data}: CraneProps) => {
         // syntactically clearer.
         <group>
 
-            {/* The rotating main column. Nesting is grouping those meshes and their gizmos together */}
+            {/* The rotating main column. Nesting is grouping the meshes and their gizmos together */}
             <Gizmo scale={5}
                    disableTranslation
                    activeAxes={[true, false, true]}

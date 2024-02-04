@@ -6,7 +6,7 @@
  * "Visualizing a Robotic Crane"
  * -----
  */
-import {ReactNode, MutableRefObject} from 'react'
+import {ReactNode} from 'react'
 import {GLTF} from 'three/examples/jsm/loaders/GLTFLoader'
 import {Vector3, Mesh, MeshStandardMaterial, Matrix4} from 'three'
 
@@ -99,11 +99,6 @@ export namespace Monumental {
         // rotation limits array: x:[start,end] y[start,end] z[start,end]
         rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
 
-        // drag events
-        onDragStart?: (props: GizmoStart) => void
-        onDrag?: (local: Matrix4, deltaLocal: Matrix4, world: Matrix4, deltaWorld: Matrix4) => void
-        onDragEnd?: () => void
-
         // custom data
         userData?: { [key: string]: any }
         children?: ReactNode
@@ -116,7 +111,6 @@ export namespace Monumental {
         onDragStart: (props: GizmoStart) => void
         onDrag: (local: Matrix4, deltaLocal: Matrix4, world: Matrix4, deltaWorld: Matrix4) => void
         onDragEnd: () => void
-        translation: MutableRefObject<[number, number, number]>
         translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
         rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
         scale: number

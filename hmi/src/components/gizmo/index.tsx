@@ -6,7 +6,7 @@
  * "Visualizing a Robotic Crane"
  * -----
  */
-import React, {useEffect, useMemo, useRef} from 'react'
+import React, {useEffect, useRef} from 'react'
 import {useThree} from '@react-three/fiber'
 import {Translate} from './Translate'
 import {Rotate} from './Rotate'
@@ -45,9 +45,6 @@ export const Gizmo = ((
             disableRotation = false,
             translationLimits,
             rotationLimits,
-            onDragStart,
-            onDrag,
-            onDragEnd,
             userData,
             children
         }: Monumental.GizmoProperties) => {
@@ -62,8 +59,6 @@ export const Gizmo = ((
         const matrixGroup = useRef<Group>(null!)
         const gizmoGroup = useRef<Group>(null!)
         const childrenGroup = useRef<Group>(null!)
-
-        const translation = useRef<[number, number, number]>([0, 0, 0])
 
         useEffect(() => {
 
@@ -141,63 +136,56 @@ export const Gizmo = ((
          * This configuration is stored in Context, see the context.Provider below
          *
          * With useMemo we only recalculate when the dependencies have changed since the last render, more specific in
-         * this case when any of the onDragStart, onDrag, onDragEnd, translation dependencies change
+         * this case when any of the onDragStart, onDrag, onDragEnd dependencies change
          */
-        const configuration = useMemo(() => ({
+        const configuration = {
 
-                /**
-                 * onDragStart is invoked by the group onPointerDown with the information on
-                 * what operation (Translate/Rotate) which axis, origin and direction array
-                 */
-                onDragStart: (props: Monumental.GizmoStart) => {
+            /**
+             * onDragStart is invoked by the group onPointerDown with the information on
+             * what operation (Translate/Rotate) which axis, origin and direction array
+             */
+            onDragStart: () => {
 
-                    // @todo learn about matrix operations
-                    localMatrix0.copy(matrixGroup.current.matrix)
-                    worldMatrix0.copy(matrixGroup.current.matrixWorld)
-                    onDragStart && onDragStart(props)
-                    invalidate()
-                },
+                // @todo learn about matrix operations
+                localMatrix0.copy(matrixGroup.current.matrix)
+                worldMatrix0.copy(matrixGroup.current.matrixWorld)
+                invalidate()
+            },
 
-                /**
-                 * onDrag is invoked by the group onPointerMove method
-                 * which calculated the delta matrix
-                 */
-                onDrag: (worldDeltaMatrix: Matrix4) => {
+            /**
+             * onDrag is invoked by the group onPointerMove method
+             * which calculated the delta matrix
+             */
+            onDrag: (worldDeltaMatrix: Matrix4) => {
 
-                    // @todo learn about matrix operations
-                    parentMatrix.copy(parentGroup.current.matrixWorld)
-                    parentMatrixInv.copy(parentMatrix).invert()
+                // @todo learn about matrix operations
+                parentMatrix.copy(parentGroup.current.matrixWorld)
+                parentMatrixInv.copy(parentMatrix).invert()
 
-                    // After applying the delta
-                    worldMatrix.copy(worldMatrix0).premultiply(worldDeltaMatrix)
-                    localMatrix.copy(worldMatrix).premultiply(parentMatrixInv)
-                    localMatrix0Inv.copy(localMatrix0).invert()
-                    localDeltaMatrix.copy(localMatrix).multiply(localMatrix0Inv)
+                // After applying the delta
+                worldMatrix.copy(worldMatrix0).premultiply(worldDeltaMatrix)
+                localMatrix.copy(worldMatrix).premultiply(parentMatrixInv)
+                localMatrix0Inv.copy(localMatrix0).invert()
+                localDeltaMatrix.copy(localMatrix).multiply(localMatrix0Inv)
 
-                    // @todo point of interest, the update of matrix group with change
-                    matrixGroup.current.matrix.copy(localMatrix)
+                // @todo point of interest, the update of matrix group with change
+                matrixGroup.current.matrix.copy(localMatrix)
 
-                    if (onDrag) onDrag(localMatrix, localDeltaMatrix, worldMatrix, worldDeltaMatrix)
+                invalidate()
+            },
 
-                    invalidate()
-                },
+            /**
+             * Mouse/pointer up
+             */
+            onDragEnd: () => {
+                invalidate()
+            },
 
-                /**
-                 * Mouse/pointer up
-                 */
-                onDragEnd: () => {
-                    if (onDragEnd) onDragEnd()
-                    invalidate()
-                },
-
-                translation,
-                translationLimits,
-                rotationLimits,
-                scale,
-                userData
-
-            }), [onDragStart, onDrag, onDragEnd, translation, invalidate, translationLimits, rotationLimits, scale, userData]
-        )
+            translationLimits,
+            rotationLimits,
+            scale,
+            userData
+        }
 
         // direction vectors
         const x = new Vector3(1, 0, 0)
