@@ -187,11 +187,6 @@ export const Gizmo = ((
             userData
         }
 
-        // direction vectors
-        const x = new Vector3(1, 0, 0)
-        const y = new Vector3(0, 1, 0)
-        const z = new Vector3(0, 0, 1)
-
         return (
             <context.Provider value={configuration}>
 
@@ -204,18 +199,18 @@ export const Gizmo = ((
                             {
                                 !disableTranslation &&
                               <>
-                                  {activeAxes[0] && <Translate axis={0} direction={x}/>}
-                                  {activeAxes[1] && <Translate axis={1} direction={y}/>}
-                                  {activeAxes[2] && <Translate axis={2} direction={z}/>}
+                                  {activeAxes[0] && <Translate axis={0}/>}
+                                  {activeAxes[1] && <Translate axis={1}/>}
+                                  {activeAxes[2] && <Translate axis={2}/>}
                               </>
                             }
 
                             {
                                 !disableRotation &&
                               <>
-                                  {activeAxes[0] && activeAxes[1] && <Rotate axis={2} dir1={x} dir2={y}/>}
-                                  {activeAxes[0] && activeAxes[2] && <Rotate axis={1} dir1={z} dir2={x}/>}
-                                  {activeAxes[2] && activeAxes[1] && <Rotate axis={0} dir1={y} dir2={z}/>}
+                                  {activeAxes[0] && activeAxes[1] && <Rotate axis={2}/>}
+                                  {activeAxes[0] && activeAxes[2] && <Rotate axis={1}/>}
+                                  {activeAxes[2] && activeAxes[1] && <Rotate axis={0}/>}
                               </>
                             }
 

@@ -17,7 +17,7 @@ import {calculateAngle, toDegrees, toRadians, minimizeAngle} from '@utils'
 /**
  * Rotate lets the user drag the gizmo and, with it, the child objects over the configured rotation axis/axes
  */
-export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({dir1, dir2, axis}) => {
+export const Rotate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
 
     // get the gizmo config & event implementations from context
     const {
@@ -28,6 +28,10 @@ export const Rotate: FC<{ dir1: Vector3; dir2: Vector3; axis: 0 | 1 | 2 }> = ({d
         onDragEnd,
         userData
     } = useContext(context)
+
+    // determine directions
+    const dir1 = axis === 2 ? new Vector3(1, 0, 0) : axis === 1 ? new Vector3(0, 0, 1) : new Vector3(0, 1, 0)
+    const dir2 = axis === 2 ? new Vector3(0, 1, 0) : axis === 1 ? new Vector3(1, 0, 0) : new Vector3(0, 0, 1)
 
     // get a handle on the cam controls to enable/disable while operating the gizmo
     const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean }

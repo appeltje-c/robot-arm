@@ -16,7 +16,7 @@ import {calculateOffset} from '@utils'
 /**
  * Translate lets the user drag the gizmo and, with it, the child objects over the configured translation axis/axes
  */
-export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({direction, axis}) => {
+export const Translate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
 
     // get the gizmo config & event implementations from context
     const {
@@ -27,6 +27,11 @@ export const Translate: FC<{ direction: Vector3; axis: 0 | 1 | 2 }> = ({directio
         onDragEnd,
         userData
     } = useContext(context)
+
+    // determine direction.
+    const direction =
+        axis === 0 ? new Vector3(1, 0, 0) :
+            axis === 1 ? new Vector3(0, 1, 0) : new Vector3(0, 0, 1)
 
     // get a handle on the cam controls to enable/disable while operating the gizmo
     const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean }
