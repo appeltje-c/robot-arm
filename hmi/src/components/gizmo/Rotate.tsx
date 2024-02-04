@@ -30,8 +30,12 @@ export const Rotate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
     } = useContext(context)
 
     // determine directions
-    const dir1 = axis === 2 ? new Vector3(1, 0, 0) : axis === 1 ? new Vector3(0, 0, 1) : new Vector3(0, 1, 0)
-    const dir2 = axis === 2 ? new Vector3(0, 1, 0) : axis === 1 ? new Vector3(1, 0, 0) : new Vector3(0, 0, 1)
+    const direction1 =
+        axis === 2 ? new Vector3(1, 0, 0) :
+            axis === 1 ? new Vector3(0, 0, 1) : new Vector3(0, 1, 0)
+    const direction2 =
+        axis === 2 ? new Vector3(0, 1, 0) :
+            axis === 1 ? new Vector3(1, 0, 0) : new Vector3(0, 0, 1)
 
     // get a handle on the cam controls to enable/disable while operating the gizmo
     const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean }
@@ -65,7 +69,7 @@ export const Rotate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
     const onPointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
 
         // update label with rotation value
-        rotationLabel.current.innerText = `${toDegrees(angle.current).toFixed(0)}º`
+        rotationLabel.current.innerText = `${toDegrees(angle.current).toFixed(0)}°`
         rotationLabel.current.style.display = 'block'
 
         // avoid handlers firing
@@ -141,7 +145,7 @@ export const Rotate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
 
             // update label values
             degrees = toDegrees(angle.current)
-            rotationLabel.current.innerText = `${degrees.toFixed(0)}º`
+            rotationLabel.current.innerText = `${degrees.toFixed(0)}°`
 
             const rotationMatrix = new Matrix4()
             const posNew = new Vector3()
@@ -198,10 +202,10 @@ export const Rotate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
      * Gizmo group matrix
      */
     const matrix = useMemo(() => {
-        const dir1N = dir1.clone().normalize()
-        const dir2N = dir2.clone().normalize()
+        const dir1N = direction1.clone().normalize()
+        const dir2N = direction2.clone().normalize()
         return new Matrix4().makeBasis(dir1N, dir2N, dir1N.clone().cross(dir2N))
-    }, [dir1, dir2])
+    }, [direction1, direction2])
 
     const r = scale * 0.65
 
@@ -231,6 +235,7 @@ export const Rotate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
                matrix={matrix}
                matrixAutoUpdate={false}>
 
+            {/** the label showing the rotation value */}
             <Html position={[r, r, 0]}>
                 <div
                     style={{
