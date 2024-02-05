@@ -118,11 +118,9 @@ export const Translate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
                 translationLabel.current.innerText = `${translation.current[axis].toFixed(2)}`
 
                 // create and calculate the offset matrix for the on drag method
-                const offsetMatrix = new Matrix4()
-                offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
+                const offsetMatrix = new Matrix4().makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
 
                 // invoke the onDrag method with the calculated offset matrix
-                // @ts-ignore
                 onDrag(offsetMatrix)
             }
 

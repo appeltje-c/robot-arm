@@ -109,7 +109,7 @@ export namespace Monumental {
      */
     export type GizmoState = {
         onDragStart: (props: GizmoStart) => void
-        onDrag: (local: Matrix4, deltaLocal: Matrix4, world: Matrix4, deltaWorld: Matrix4) => void
+        onDrag: (local: Matrix4) => void
         onDragEnd: () => void
         translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
         rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]

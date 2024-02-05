@@ -155,7 +155,6 @@ export const Rotate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
             rotationMatrix.setPosition(posNew)
 
             // invoke the onDrag method with the calculated rotation matrix
-            // @ts-ignore
             onDrag(rotationMatrix)
         }
 
@@ -183,7 +182,7 @@ export const Rotate: FC<{ axis: 0 | 1 | 2 }> = ({axis}) => {
         // give cam controls back
         camControls && (camControls.enabled = true)
 
-        // @ts-ignore - setPointerCapture is not in the type definition
+        // @ts-ignore - releasePointerCapture & PointerEvent#pointerId is not in the type definition
         event.target.releasePointerCapture(event.pointerId)
 
     }, [camControls, onDragEnd])

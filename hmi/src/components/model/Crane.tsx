@@ -56,7 +56,7 @@ export const Crane = ({data}: CraneProps) => {
                     <Gizmo activeAxes={[true, false, true]}
                            rotationLimits={[undefined, [-2, 2], undefined]}
                            disableTranslation
-                           anchor={[-0.889, 1, -0.4]}
+                           anchor={[-0.827, 1, -0.45]}
                            scale={2}
                            userData={[node.elbow]}>
                         <Mesh node={nodes[node.elbow]} data={data.nodes[node.elbow]}/>
@@ -66,7 +66,7 @@ export const Crane = ({data}: CraneProps) => {
                         <Gizmo activeAxes={[true, false, true]}
                                rotationLimits={[undefined, [-2, 2], undefined]}
                                disableTranslation
-                               anchor={[-0.75, 1, -0.4]}
+                               anchor={[-0.7, 1, -0.3]}
                                scale={2}
                                userData={[node.wrist]}>
                             <Mesh node={nodes[node.wrist]} data={data.nodes[node.wrist]}/>
