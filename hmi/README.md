@@ -1,4 +1,4 @@
-# Monumental Hmi
+# Hmi
 
 ### To do
 - Persist matrix data

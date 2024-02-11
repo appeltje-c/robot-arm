@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2024 - Martijn Benjamin
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
  *
  * -----
- * Written for the Monumental technical assessment
- * "Visualizing a Robotic Crane"
+ * "Robotic Arm Study"
  * -----
  */
 import {ReactNode} from 'react'
@@ -12,15 +12,13 @@ import {Vector3, Mesh, MeshStandardMaterial, Matrix4} from 'three'
 
 /**
  * Types for the project
- *
- * author Martijn Benjamin
  */
-export namespace Monumental {
+export namespace Robot {
 
     /**
-     * The Node names we expect on a Crane
+     * The Node names we expect on a Robot
      */
-    export enum CraneNodeName {
+    export enum NodeName {
         mainColumn = 'main_column',
         upperArm = 'upper_arm',
         elbow = 'elbow',
@@ -32,25 +30,25 @@ export namespace Monumental {
     }
 
     /**
-     * Crane Nodes expected in Crane data
+     * Nodes expected in robot data
      */
-    export interface CraneNodes {
+    export interface RobotNodes {
         nodes: {
-            [CraneNodeName.mainColumn]: CraneNode,
-            [CraneNodeName.upperArm]: CraneNode,
-            [CraneNodeName.elbow]: CraneNode,
-            [CraneNodeName.lowerArm]: CraneNode,
-            [CraneNodeName.wrist]: CraneNode,
-            [CraneNodeName.wristExtension]: CraneNode,
-            [CraneNodeName.hand]: CraneNode,
-            [CraneNodeName.gripper]: CraneNode
+            [NodeName.mainColumn]: RobotNode,
+            [NodeName.upperArm]: RobotNode,
+            [NodeName.elbow]: RobotNode,
+            [NodeName.lowerArm]: RobotNode,
+            [NodeName.wrist]: RobotNode,
+            [NodeName.wristExtension]: RobotNode,
+            [NodeName.hand]: RobotNode,
+            [NodeName.gripper]: RobotNode
         }
     }
 
     /**
-     * Crane Node data
+     * Robot Node data
      */
-    export interface CraneNode {
+    export interface RobotNode {
         position: Vector3,
         scale: Vector3
     }
@@ -65,11 +63,11 @@ export namespace Monumental {
     }
 
     /**
-     * With mesh and crane data we construct each Crane node
+     * With mesh and robot data we construct each Robot node
      */
     export type MeshProperties = {
         node: Mesh
-        data: CraneNode
+        data: RobotNode
     }
 
     /**

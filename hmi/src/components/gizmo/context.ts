@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2024 - Martijn Benjamin
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
  *
  * -----
- * Written for the Monumental technical assessment
- * "Visualizing a Robotic Crane"
+ * "Robotic Arm Study"
  * -----
  */
 import {createContext} from 'react'
-import {Monumental} from '@types'
+import {Robot} from '@types'
 
-export const context = createContext<Monumental.GizmoState>(null!)
+export const context = createContext<Robot.GizmoState>(null!)

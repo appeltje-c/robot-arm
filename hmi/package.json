@@ -1,10 +1,10 @@
 {
-  "name": "monumental-hmi",
+  "name": "hmi",
   "version": "1.0.0",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/appeltje-c/monumental"
+    "url": "https://github.com/appeltje-c/robot-arm"
   },
   "dependencies": {
     "@react-three/drei": "^9.97.0",

@@ -1,35 +1,33 @@
 /*
- * Copyright (C) 2024 - Martijn Benjamin
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
  *
  * -----
- * Written for the Monumental technical assessment
- * "Visualizing a Robotic Crane"
+ * "Robotic Arm Study"
  * -----
  */
 import React from 'react'
 import {Gizmo} from '@components/gizmo'
 import {useGLTF} from '@react-three/drei'
-import {Monumental} from '@types'
+import {Robot} from '@types'
 import Mesh from "@components/mesh/Mesh";
 
-interface CraneProps {
-    data: Monumental.CraneNodes
+interface RobotProps {
+    data: Robot.RobotNodes
 }
 
 /**
- * The Crane Component takes care of loading the crane model,
+ * The Robot Component takes care of loading the robot model,
  * loads the meshes with initial state and configures the gizmos
- *
- * author Martijn Benjamin
  */
-export const Crane = ({data}: CraneProps) => {
+export const RobotArm = ({data}: RobotProps) => {
 
-    // load the crane model
+    // load the robot model
     // the nodes and materials are missing from the GLTF typing
     // and extending (DreiGLTF) does not resolve. Casting as unknown to avoid this
     // @todo create/vote github issue with Drei
-    const {nodes} = useGLTF('/crane.glb') as unknown as Monumental.DreiGLTF
-    const node = Monumental.CraneNodeName
+    const {nodes} = useGLTF('/robot.glb') as unknown as Robot.DreiGLTF
+    const node = Robot.NodeName
 
     return (
         // A group is almost identical to an object3D. Its purpose is to make working with groups of objects
@@ -92,4 +90,4 @@ export const Crane = ({data}: CraneProps) => {
 }
 
 // preload for performance
-useGLTF.preload('/crane.glb')
+useGLTF.preload('/robot.glb')

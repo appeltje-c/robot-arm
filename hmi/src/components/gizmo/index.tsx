@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2024 - Martijn Benjamin
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
  *
  * -----
- * Written for the Monumental technical assessment
- * "Visualizing a Robotic Crane"
+ * "Robotic Arm Study"
  * -----
  */
 import React, {useEffect, useRef} from 'react'
@@ -12,7 +12,7 @@ import {Translate} from './Translate'
 import {Rotate} from './Rotate'
 import {context} from './context'
 import {Vector3, Matrix4, Box3, Group} from 'three'
-import {Monumental} from '@types'
+import {Robot} from '@types'
 
 // local matrices
 const localMatrix0 = new Matrix4()
@@ -47,7 +47,7 @@ export const Gizmo = ((
             rotationLimits,
             userData,
             children
-        }: Monumental.GizmoProperties) => {
+        }: Robot.GizmoProperties) => {
 
         // A handle to the underlying canvas invalidation method.
         // [useThree] Accesses R3F's internal state (WebGL), containing renderer, canvas, scene, etc.

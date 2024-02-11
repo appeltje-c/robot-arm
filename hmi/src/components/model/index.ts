@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2024 - Martijn Benjamin
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
  *
  * -----
- * Written for the Monumental technical assessment
- * "Visualizing a Robotic Crane"
+ * "Robotic Arm Study"
  * -----
  */
 
@@ -12,7 +12,5 @@
  * Model is created in Blender, exported to glb and converted to tsx.
  *
  * Using a Barrel for clean import
- *
- * author Martijn Benjamin
  */
-export {Crane} from './Crane'
+export {RobotArm} from './RobotArm'

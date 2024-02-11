@@ -1,28 +1,26 @@
 /*
- * Copyright (C) 2024 - Martijn Benjamin
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
  *
  * -----
- * Written for the Monumental technical assessment
- * "Visualizing a Robotic Crane"
+ * "Robotic Arm Study"
  * -----
  */
 import React, {useState, useEffect} from 'react'
 import {Canvas} from '@react-three/fiber'
 import {GizmoHelper, GizmoViewport, OrbitControls, Environment, Stats, PerspectiveCamera} from '@react-three/drei'
-import {Crane} from '@components/model'
 import {Shadows, Ground} from '@components/stage'
 import socketIOClient from 'socket.io-client'
-import {Monumental} from '@types'
+import {Robot} from '@types'
+import {RobotArm} from "@components/model/RobotArm"
 
 /**
  * The App component defines the hmi visible and control elements
- *
- * author Martijn Benjamin
  */
 export default function App() {
 
-    // keep the data for the crane in state
-    const [robotData, setRobotData] = useState<Monumental.CraneNodes>()
+    // keep the data for the robot in state
+    const [robotData, setRobotData] = useState<Robot.RobotNodes>()
     const socket = socketIOClient('/')
 
     useEffect(() => {
@@ -31,7 +29,7 @@ export default function App() {
         if (!robotData) socket.emit("state:get")
 
         // set received state changes in state
-        socket.on("state", (data: Monumental.CraneNodes) => {
+        socket.on("state", (data: Robot.RobotNodes) => {
             setRobotData(data)
         })
 
@@ -52,7 +50,7 @@ export default function App() {
                   position={[10, 8, 25]}/>
 
                   {/** our model */}
-                <Crane data={robotData}/>
+                <RobotArm data={robotData}/>
 
                   {/** environment elements*/}
                 <Shadows/>

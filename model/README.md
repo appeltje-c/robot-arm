@@ -1,4 +1,4 @@
-# Monumental Model
+# Model
 
 ## Process
 

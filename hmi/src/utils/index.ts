@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
+ *
+ * -----
+ * "Robotic Arm Study"
+ * -----
+ */
 import {Vector3} from "three";
 
 /**

@@ -1,11 +1,11 @@
 {
-  "name": "monumental-api",
+  "name": "api",
   "version": "1.0.0",
-  "description": "Monumental (mocked) Robot API",
+  "description": "Robot API",
   "author": "Martijn Benjamin",
   "repository": {
     "type": "git",
-    "url": "https://github.com/appeltje-c/monumental"
+    "url": "https://github.com/appeltje-c/robot-arm"
   },
   "scripts": {
     "start": "node dist/server.js",

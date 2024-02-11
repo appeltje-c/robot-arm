@@ -1,14 +1,14 @@
 /*
- * Copyright (C) 2024 - Martijn Benjamin
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
  *
  * -----
- * Written for the Monumental technical assessment
- * "Visualizing a Robotic Crane"
+ * "Robotic Arm Study"
  * -----
  */
 import mongoose from "mongoose"
 
-enum CraneNodeName {
+enum NodeName {
     mainColumn = 'main_column',
     upperArm = 'upper_arm',
     elbow = 'elbow',
@@ -19,56 +19,56 @@ enum CraneNodeName {
     gripper = 'gripper'
 }
 
-export interface CraneNode {
+export interface RobotNode {
     position: [number, number, number],
     scale: [number, number, number]
 }
 
 export type RobotStateDocument = mongoose.Document & {
     nodes: {
-        [CraneNodeName.mainColumn]: CraneNode
-        [CraneNodeName.upperArm]: CraneNode
-        [CraneNodeName.elbow]: CraneNode
-        [CraneNodeName.lowerArm]: CraneNode
-        [CraneNodeName.wrist]: CraneNode
-        [CraneNodeName.wristExtension]: CraneNode
-        [CraneNodeName.hand]: CraneNode
-        [CraneNodeName.gripper]: CraneNode
+        [NodeName.mainColumn]: RobotNode
+        [NodeName.upperArm]: RobotNode
+        [NodeName.elbow]: RobotNode
+        [NodeName.lowerArm]: RobotNode
+        [NodeName.wrist]: RobotNode
+        [NodeName.wristExtension]: RobotNode
+        [NodeName.hand]: RobotNode
+        [NodeName.gripper]: RobotNode
     }
 }
 
 const robotStateSchema = new mongoose.Schema<RobotStateDocument>(
     {
         nodes: {
-            [CraneNodeName.mainColumn]: {
+            [NodeName.mainColumn]: {
                 position: Array<number>,
                 scale: Array<number>
             },
-            [CraneNodeName.upperArm]: {
+            [NodeName.upperArm]: {
                 position: Array<number>,
                 scale: Array<number>
             },
-            [CraneNodeName.elbow]: {
+            [NodeName.elbow]: {
                 position: Array<number>,
                 scale: Array<number>
             },
-            [CraneNodeName.lowerArm]: {
+            [NodeName.lowerArm]: {
                 position: Array<number>,
                 scale: Array<number>
             },
-            [CraneNodeName.wrist]: {
+            [NodeName.wrist]: {
                 position: Array<number>,
                 scale: Array<number>
             },
-            [CraneNodeName.wristExtension]: {
+            [NodeName.wristExtension]: {
                 position: Array<number>,
                 scale: Array<number>
             },
-            [CraneNodeName.hand]: {
+            [NodeName.hand]: {
                 position: Array<number>,
                 scale: Array<number>
             },
-            [CraneNodeName.gripper]: {
+            [NodeName.gripper]: {
                 position: Array<number>,
                 scale: Array<number>
             }

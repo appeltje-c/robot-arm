@@ -8,7 +8,7 @@
 
 This project is a study to learn how three.js, three fiber and supporting libraries can be used to make 3D apps.
 
-The project consists of an API, React Application and the Blender crane model in the folders:
+The project consists of an API, React Application and the Blender robot model in the folders:
 
 * api - A NodeJS project using MongoDB and Websocket connectivity for robot data
 * model - The Mesh of the arm modelled in Blender

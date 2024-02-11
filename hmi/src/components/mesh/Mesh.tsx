@@ -1,13 +1,13 @@
 /*
- * Copyright (C) 2024 - Martijn Benjamin
+ * Copyright (C) 2024
+ * Martijn Benjamin (https://github.com/appeltje-c)
  *
  * -----
- * Written for the Monumental technical assessment
- * "Visualizing a Robotic Crane"
+ * "Robotic Arm Study"
  * -----
  */
 import React from 'react'
-import {Monumental} from '@types'
+import {Robot} from '@types'
 
 /**
  * Defines a Mesh with material and location
@@ -15,7 +15,7 @@ import {Monumental} from '@types'
  * @param node The GLTF Mesh
  * @param data The node 3d data
  */
-const Mesh = ({node, data}: Monumental.MeshProperties) => {
+const Mesh = ({node, data}: Robot.MeshProperties) => {
 
     return (
         <mesh geometry={node.geometry}

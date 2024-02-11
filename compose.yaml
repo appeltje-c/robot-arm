@@ -1,9 +1,9 @@
 #
-# Copyright (C) 2024 - Martijn Benjamin
+# Copyright (C) 2024
+#  Martijn Benjamin (appeltje-C)
 #
 # -----
-# Written for the Monumental technical assessment
-# "Visualizing a Robotic Crane"
+# "Robotic Arm Study"
 # -----
 #
 services:
@@ -21,7 +21,7 @@ services:
       - /usr/src/hmi/node_modules
     restart: always
     networks:
-      - monumental-hmi
+      - hmi-network
     depends_on:
       - api
 
@@ -37,8 +37,8 @@ services:
     depends_on:
       - storage
     networks:
-      - monumental-storage
-      - monumental-hmi
+      - storage-network
+      - hmi-network
     expose:
       - 3000:3000
 
@@ -50,10 +50,10 @@ services:
     volumes:
       - ./data:/data/db
     networks:
-      - monumental-storage
+      - storage-network
     expose:
       - 27017
 
 networks:
-  monumental-hmi:
-  monumental-storage:
+  hmi-network:
+  storage-network:
