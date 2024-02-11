@@ -1,35 +1,27 @@
-# Robotic Crane Visualisation
+# Robotic Arm
 
 > written
 > by [Martijn Benjamin](https://www.linkedin.com/in/martijn-benjamin/) ([Appeltje-C](https://github.com/appeltje-c))
-> for [Monumental](https://www.monumental.co/)
+>
 
 ## Intro
 
-This project is my implementation of the Monumental "Visualizing a Robotic Crane" technical assessment and my 3D and
-Robotics study project going forward.
+This project is a study to learn how three.js, three fiber and supporting libraries can be used to make 3D apps.
 
 The project consists of an API, React Application and the Blender crane model in the folders:
 
-* api - A NodeJS project displaying backend technology using MongoDB and Websocket connectivity
-* model - The Mesh and armature of the Crane modelled in Blender
-* hmi - A React Application visualizing the Crane displaying frontend technology using React Three Fiber and the API
-  over Websockets for the telemetry data.
+* api - A NodeJS project using MongoDB and Websocket connectivity for robot data
+* model - The Mesh of the arm modelled in Blender
+* hmi - A React Application using React Three Fiber and the API over Websockets for the telemetry data.
 
 ## Running the project
-
-The project has been configured to run with Docker. It is possible to run without Docker but requires extra steps to
-install MongoDB, seed the data and configure the network. For the sake of brevity this has been left out of the scope of
-the implementation. Drop me a message if you want to run it without Docker.
-
-Running the project takes a few steps:
 
 * Make sure Docker is installed running: [https://www.docker.com/get-started/](https://www.docker.com/get-started/)
 * Clone the repo and run docker
 
 ```shell
-git clone https://github.com/appeltje-c/monumental
-cd monumental
+git clone https://github.com/appeltje-c/robot-arm
+cd robot-arm
 docker compose up -d
 ```
 
@@ -49,17 +41,15 @@ docker compose down
 
 There are three main projects
 
-[Monumental Hmi](hmi/README.md) : The React App
+[Hmi](hmi/README.md) : The React App
 
-[Monumental API](./api/README.md) : The API
+[API](./api/README.md) : The API
 
-[Monumental Model](./model/README.md) : The Crane Model
-
-Enjoy!
+[Model](./model/README.md) : The Arm Model
 
 ## Resources
 
-Here is a collection of online resources I used to get familiar with Robotic and 3D concepts.
+Here is a collection of online resources I used to get familiar with Robotics and 3D concepts.
 
 *Rabbit hole warning*
 
