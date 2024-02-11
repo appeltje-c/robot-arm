@@ -25,11 +25,7 @@ cd robot-arm
 docker compose up -d
 ```
 
-When the Docker output reads
-
-<img src="docker.png" alt="drawing" width="500"/>
-
-the project is running, you can open [http://localhost:3000](http://localhost:3000)
+When the project is running, you can open [http://localhost:3000](http://localhost:3000)
 
 To stop the containers
 
